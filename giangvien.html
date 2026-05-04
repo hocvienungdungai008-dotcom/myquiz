@@ -3,157 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giảng Viên - Điều khiển Quiz</title>
-    <!-- Nhúng thư viện SheetJS để đọc file Excel -->
+    <title>Bảng Điều Khiển Giảng Viên</title>
+    <!-- Nhúng thư viện SheetJS và FontAwesome (để lấy icon) -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .control-panel { background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .import-panel { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        button { padding: 8px 12px; margin-right: 10px; cursor: pointer; }
-        input[type="file"] { margin-right: 10px; }
+        /* CSS Reset cơ bản */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; overflow-x: hidden; }
+
+        /* Nút Hamburger & Fullscreen góc trên phải */
+        .top-bar {
+            position: fixed; top: 0; left: 0; right: 0; height: 60px;
+            background: #2c3e50; color: white; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-btn {
+            background: transparent; border: none; color: white; font-size: 24px;
+            cursor: pointer; padding: 10px; transition: color 0.3s;
+        }
+        .icon-btn:hover { color: #3498db; }
+
+        /* Khung hiển thị trung tâm (Màn hình chiếu) */
+        .presentation-area {
+            margin-top: 80px; padding: 20px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;
+        }
+        
+        .room-pin-display { font-size: 48px; font-weight: bold; color: #e74c3c; margin-bottom: 20px; letter-spacing: 5px;}
+        .instruction-text { font-size: 24px; color: #7f8c8d; margin-bottom: 30px; }
+
+        /* Nút điều khiển game chính */
+        .action-btn {
+            padding: 15px 30px; font-size: 20px; font-weight: bold; color: white;
+            border: none; border-radius: 8px; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.95); }
+        .btn-start { background: #2ecc71; margin-bottom: 20px;}
+        .btn-show { background: #f39c12; }
+
+        /* Menu ẩn (Sidebar) */
+        .sidebar {
+            position: fixed; top: 0; left: -350px; width: 350px; height: 100vh;
+            background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+            z-index: 1001; transition: left 0.3s ease; padding: 20px; overflow-y: auto;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;
+        }
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #e74c3c; }
+        
+        /* Các khối chức năng trong Sidebar */
+        .sidebar-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .sidebar-section h3 { font-size: 16px; margin-bottom: 10px; color: #2c3e50; }
+        .sidebar-section input[type="file"] { width: 100%; margin-bottom: 10px; font-size: 14px; }
+        .sidebar-btn {
+            width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
+        }
+        .btn-import { background: #3498db; color: white; margin-bottom: 10px;}
+        .btn-create-room { background: #9b59b6; color: white; }
+
+        /* Hiển thị danh sách học viên */
+        .player-list-container { max-height: 250px; overflow-y: auto; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;}
+        .player-list-container li { padding: 5px 0; border-bottom: 1px dashed #eee; list-style: none;}
+
+        /* Lớp phủ đen (Overlay) khi mở Sidebar */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; display: none;
+        }
+        .overlay.active { display: block; }
     </style>
 </head>
 <body>
-    <h1>Bảng Điều Khiển Giảng Viên</h1>
 
-    <!-- KHU VỰC NHẬP CÂU HỎI TỪ EXCEL -->
-    <div class="import-panel">
-        <h3>1. Nhập câu hỏi từ file Quizizz (Excel)</h3>
-        <input type="file" id="fileUpload" accept=".xlsx, .xls">
-        <button id="btnImport">Import lên Hệ thống</button>
-        <p id="importStatus" style="color: green; font-weight: bold;"></p>
+    <!-- THANH TRẠNG THÁI TRÊN CÙNG -->
+    <div class="top-bar">
+        <button class="icon-btn" id="btnToggleMenu" title="Menu Cài đặt"><i class="fas fa-bars"></i></button>
+        <div style="font-weight: bold; font-size: 20px;">HSE QUIZ - CONTROL PANEL</div>
+        <button class="icon-btn" id="btnFullscreen" title="Toàn màn hình"><i class="fas fa-expand"></i></button>
     </div>
 
-    <!-- KHU VỰC ĐIỀU KHIỂN GAME -->
-    <div class="control-panel">
-        <h3>2. Điều khiển lớp học</h3>
-        <button id="btnInitRoom">Khởi tạo phòng học (Reset data)</button>
-        <button id="btnStartGame">Bắt đầu câu số 1</button>
-        <button id="btnShowAnswer">Hiện đáp án & Tính điểm</button>
+    <!-- KHU VỰC TRÌNH CHIẾU TRUNG TÂM -->
+    <div class="presentation-area">
+        <div id="lobbyView">
+            <div class="instruction-text">Mã phòng học hiện tại:</div>
+            <div class="room-pin-display" id="displayPin">----</div>
+            <p>Học viên đang vào lớp: <span style="font-weight: bold; font-size: 24px; color:#2ecc71;" id="playerCountMain">0</span>/150</p>
+            <br><br>
+            <button class="action-btn btn-start" id="btnStartGame" style="display: none;">BẮT ĐẦU CÂU HỎI 1</button>
+        </div>
+        <!-- Giao diện hiển thị câu hỏi và 4 đáp án sẽ được thay thế vào đây sau khi bấm Bắt đầu -->
     </div>
 
-    <h3>Danh sách học viên đã vào lớp (<span id="playerCount">0</span>/150)</h3>
-    <ul id="playerList"></ul>
+    <!-- LỚP PHỦ TỐI MÀN HÌNH -->
+    <div class="overlay" id="overlay"></div>
 
+    <!-- SIDEBAR MENU ẨN -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Cài đặt & Quản lý</h2>
+            <button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>1. Nhập dữ liệu câu hỏi (Excel)</h3>
+            <input type="file" id="fileUpload" accept=".xlsx, .xls">
+            <button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-upload"></i> Bắt đầu Import</button>
+            <p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px;"></p>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>2. Khởi tạo phòng học</h3>
+            <button class="sidebar-btn btn-create-room" id="btnInitRoom"><i class="fas fa-plus-circle"></i> Mở phòng mới (Tạo mã PIN)</button>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Danh sách học viên (<span id="playerCountSidebar">0</span>)</h3>
+            <ul class="player-list-container" id="playerList"></ul>
+        </div>
+    </div>
+
+    <!-- SCRIPT TÍCH HỢP -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // Cấu hình Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0",
             authDomain: "myquiz-e696f.firebaseapp.com",
             projectId: "myquiz-e696f",
             storageBucket: "myquiz-e696f.firebasestorage.app",
             messagingSenderId: "609107578436",
-            appId: "1:609107578436:web:0a042fb99e00c2212f3611",
-            measurementId: "G-75BKW41Y6B"
+            appId: "1:609107578436:web:0a042fb99e00c2212f3611"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let currentRoomPin = "";
+
         // ==========================================
-        // TÍNH NĂNG IMPORT FILE EXCEL QUIZIZZ
+        // XỬ LÝ GIAO DIỆN: SIDEBAR & FULLSCREEN
+        // ==========================================
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const btnToggleMenu = document.getElementById('btnToggleMenu');
+        const btnCloseMenu = document.getElementById('btnCloseMenu');
+
+        const openMenu = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
+        const closeMenu = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
+
+        btnToggleMenu.addEventListener('click', openMenu);
+        btnCloseMenu.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu); // Bấm ra ngoài để đóng menu
+
+        // API Chế độ Toàn màn hình
+        const elem = document.documentElement;
+        document.getElementById('btnFullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) { elem.requestFullscreen(); }
+                else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } // Safari
+            } else {
+                if (document.exitFullscreen) { document.exitFullscreen(); }
+            }
+        });
+
+        // ==========================================
+        // XỬ LÝ IMPORT EXCEL (CÓ HIỂN THỊ TIẾN ĐỘ)
         // ==========================================
         document.getElementById('btnImport').addEventListener('click', () => {
             const fileInput = document.getElementById('fileUpload');
             const file = fileInput.files[0];
+            const statusText = document.getElementById('importStatus');
             
-            if (!file) {
-                alert("Vui lòng chọn file Excel trước khi import!");
-                return;
-            }
+            if (!file) { alert("Vui lòng chọn file Excel!"); return; }
 
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
-                    // Đọc file thành định dạng array buffer
+                    statusText.innerText = "Đang đọc cấu trúc file...";
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    // Lấy dữ liệu từ Sheet đầu tiên
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    
-                    // Chuyển đổi Sheet thành mảng JSON
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet);
                     
-                    let questionCount = 0;
-                    document.getElementById('importStatus').innerText = "Đang xử lý đẩy dữ liệu lên Firebase...";
+                    // Lọc ra danh sách các dòng có câu hỏi hợp lệ
+                    const validQuestions = jsonData.filter(row => row['Question Text']);
+                    const totalQuestions = validQuestions.length;
+                    
+                    if(totalQuestions === 0) {
+                        statusText.innerText = "Lỗi: Không tìm thấy cột 'Question Text' hợp lệ.";
+                        return;
+                    }
 
-                    // Lặp qua từng dòng dữ liệu và đẩy lên Firestore
-                    for (let i = 0; i < jsonData.length; i++) {
-                        const row = jsonData[i];
+                    // Bắt đầu vòng lặp đẩy dữ liệu
+                    let successCount = 0;
+                    for (let i = 0; i < totalQuestions; i++) {
+                        const row = validQuestions[i];
+                        const qId = i + 1;
                         
-                        // Bỏ qua nếu dòng không có câu hỏi
-                        if (!row['Question Text']) continue;
-
-                        questionCount++;
+                        // Cập nhật UI ngay lập tức
+                        statusText.innerText = `Đang tải lên: Câu ${qId} / ${totalQuestions}...`;
                         
-                        // Đẩy vào Collection 'Questions' với ID lần lượt là q1, q2, q3...
-                        await setDoc(doc(db, "Questions", "q" + questionCount), {
-                            id: questionCount,
+                        // Đẩy lên Firestore
+                        await setDoc(doc(db, "Questions", "q" + qId), {
+                            id: qId,
                             text: row['Question Text'],
                             options: [
-                                row['Option 1'] || "",
-                                row['Option 2'] || "",
-                                row['Option 3'] || "",
-                                row['Option 4'] || ""
+                                row['Option 1'] || "", row['Option 2'] || "",
+                                row['Option 3'] || "", row['Option 4'] || ""
                             ],
-                            // Lưu số nguyên (1, 2, 3, 4) cho đáp án đúng
                             correct_answer: parseInt(row['Correct Answer']) || 1,
                             time_limit: parseInt(row['Time in seconds']) || 60
                         });
+                        
+                        successCount++;
                     }
 
-                    document.getElementById('importStatus').innerText = `Thành công! Đã tải lên ${questionCount} câu hỏi.`;
-                    alert(`Đã tải lên ${questionCount} câu hỏi thành công!`);
+                    statusText.style.color = "green";
+                    statusText.innerText = `Thành công! Đã nạp xong ${successCount} câu hỏi.`;
 
                 } catch (error) {
-                    console.error("Lỗi khi đọc file: ", error);
-                    alert("Có lỗi xảy ra khi xử lý file Excel. Vui lòng kiểm tra lại định dạng.");
+                    console.error(error);
+                    statusText.style.color = "red";
+                    statusText.innerText = "Lỗi đọc file. Vui lòng thử lại!";
                 }
             };
-            
             reader.readAsArrayBuffer(file);
         });
 
         // ==========================================
-        // ĐIỀU KHIỂN PHÒNG HỌC
+        // KHỞI TẠO PHÒNG HỌC MỚI VÀ SINH MÃ PIN
         // ==========================================
         document.getElementById('btnInitRoom').addEventListener('click', async () => {
-            await setDoc(doc(db, "GameSession", "Room_01"), {
+            // Sinh mã PIN ngẫu nhiên 4 chữ số (Từ 1000 đến 9999)
+            currentRoomPin = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            await setDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
                 status: "lobby",
                 current_question: 0,
-                correct_answer: "",
                 start_time: 0
             });
-            alert("Phòng học đã mở. Cho học viên quét QR!");
-        });
-
-        const unsubPlayers = onSnapshot(collection(db, "Players"), (snapshot) => {
-            const listUI = document.getElementById('playerList');
-            document.getElementById('playerCount').innerText = snapshot.size;
             
-            listUI.innerHTML = ""; 
-            snapshot.forEach((doc) => {
-                const player = doc.data();
-                const li = document.createElement('li');
-                li.innerText = player.name + " - Điểm: " + player.score;
-                listUI.appendChild(li);
-            });
+            // Cập nhật giao diện Trình chiếu chính
+            document.getElementById('displayPin').innerText = currentRoomPin;
+            document.getElementById('btnStartGame').style.display = 'block'; // Hiện nút bắt đầu
+            
+            closeMenu(); // Đóng menu để hiện màn hình chính
+            
+            // Lắng nghe danh sách học viên tham gia vào phòng có mã PIN này
+            listenToPlayers();
         });
 
-        document.getElementById('btnStartGame').addEventListener('click', async () => {
-            await updateDoc(doc(db, "GameSession", "Room_01"), {
-                status: "playing",
-                current_question: 1,
-                start_time: Date.now()
+        function listenToPlayers() {
+            // Lưu ý thực tế: Bạn có thể cần thiết lập bộ lọc (where) trong truy vấn Firestore 
+            // để chỉ đếm số học viên tham gia đúng Room_PIN này.
+            onSnapshot(collection(db, "Players"), (snapshot) => {
+                let count = snapshot.size;
+                document.getElementById('playerCountMain').innerText = count;
+                document.getElementById('playerCountSidebar').innerText = count;
+                
+                const listUI = document.getElementById('playerList');
+                listUI.innerHTML = ""; 
+                snapshot.forEach((doc) => {
+                    const player = doc.data();
+                    const li = document.createElement('li');
+                    li.innerText = player.name; // Có thể ẩn điểm số ở lobby
+                    listUI.appendChild(li);
+                });
             });
-        });
+        }
     </script>
 </body>
 </html>
