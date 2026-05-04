@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSE QUIZ - Bảng Điều Khiển Giảng Viên</title>
-    <!-- Các thư viện cần thiết -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -29,6 +28,22 @@
         .action-btn:active { transform: scale(0.95); }
         .btn-start { background: #2ecc71; margin-bottom: 20px; width: 100%; max-width: 400px;}
 
+        /* CSS MỚI: Khu vực hiển thị tên học viên trên màn hình chính */
+        .main-player-grid {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+            max-width: 900px; margin: 0 auto 30px auto; max-height: 250px; overflow-y: auto;
+            padding: 10px;
+        }
+        .player-chip {
+            background: #3498db; color: white; padding: 8px 16px; border-radius: 20px;
+            font-size: 18px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.2); z-index: 1001; transition: left 0.3s ease; padding: 20px; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
@@ -36,12 +51,18 @@
         
         .sidebar-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         .sidebar-section h3 { font-size: 16px; margin-bottom: 10px; color: #2c3e50; }
-        .sidebar-section input[type="file"] { width: 100%; margin-bottom: 10px; font-size: 14px; }
+        
+        .txt-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        input[type="file"] { width: 100%; margin-bottom: 10px; font-size: 14px; }
         .sidebar-btn { width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-import { background: #3498db; color: white; margin-bottom: 10px;}
-        .btn-create-room { background: #9b59b6; color: white; }
+        
+        .library-list { max-height: 200px; overflow-y: auto; background: white; border: 1px solid #ddd; border-radius: 5px; padding: 5px; }
+        .library-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .library-item:last-child { border-bottom: none; }
+        .btn-open-room { background: #9b59b6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 
-        .player-list-container { max-height: 250px; overflow-y: auto; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;}
+        .player-list-container { max-height: 200px; overflow-y: auto; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;}
         .player-list-container li { padding: 8px 5px; border-bottom: 1px dashed #eee; list-style: none; font-size: 16px;}
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
@@ -58,10 +79,14 @@
     <!-- KHU VỰC TRÌNH CHIẾU TRUNG TÂM -->
     <div class="presentation-area">
         <div id="welcomeMessage" style="font-size: 24px; color: #7f8c8d;">
-            <i class="fas fa-arrow-left"></i> Vui lòng mở Menu (góc trái) để Import câu hỏi hoặc Mở phòng học mới.
+            <i class="fas fa-arrow-left"></i> Vui lòng mở Menu để chọn Bộ câu hỏi và Mở phòng.
         </div>
 
         <div id="lobbyView" style="display: none;">
+            <div style="font-size: 20px; font-weight: bold; color: #34495e; margin-bottom: 10px;">
+                Đang mở bộ: <span id="currentSetNameDisplay" style="color: #9b59b6;">---</span>
+            </div>
+            
             <div class="join-info-container">
                 <div id="qrcode"></div>
                 <div class="pin-section">
@@ -71,11 +96,16 @@
                 </div>
             </div>
 
-            <p style="font-size: 20px; margin-bottom: 20px;">Học viên đang vào lớp: <span style="font-weight: bold; font-size: 32px; color:#2ecc71;" id="playerCountMain">0</span>/150</p>
+            <p style="font-size: 20px; margin-bottom: 10px;">Học viên đang vào lớp: <span style="font-weight: bold; font-size: 32px; color:#2ecc71;" id="playerCountMain">0</span>/150</p>
+            
+            <!-- VÙNG HIỂN THỊ TÊN HỌC VIÊN TRÊN MÀN HÌNH CHÍNH -->
+            <div class="main-player-grid" id="mainPlayerList">
+                <!-- Tên học viên sẽ hiện ở đây dưới dạng các "chip" màu xanh -->
+            </div>
+
             <button class="action-btn btn-start" id="btnStartGame">BẮT ĐẦU TRẮC NGHIỆM</button>
         </div>
         
-        <!-- Khu vực hiển thị nội dung câu hỏi sau khi bắt đầu game (Sẽ phát triển thêm logic tại đây) -->
         <div id="gameView" style="display: none; font-size: 28px; font-weight: bold; color: #2c3e50;">
             TRÒ CHƠI ĐÃ BẮT ĐẦU! HỌC VIÊN ĐANG LÀM BÀI TRÊN ĐIỆN THOẠI...
         </div>
@@ -88,16 +118,22 @@
             <h2>Cài đặt & Quản lý</h2>
             <button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button>
         </div>
+        
         <div class="sidebar-section">
-            <h3>1. Nhập dữ liệu (Excel)</h3>
+            <h3><i class="fas fa-book"></i> Thư viện câu hỏi</h3>
+            <div class="library-list" id="librarySets">
+                <p style="font-size: 13px; color: #777; text-align: center; padding: 10px;">Đang tải thư viện...</p>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3><i class="fas fa-plus-square"></i> Thêm bộ câu hỏi mới</h3>
+            <input type="text" id="newSetName" class="txt-input" placeholder="Tên bộ câu hỏi (VD: An toàn điện)">
             <input type="file" id="fileUpload" accept=".xlsx, .xls">
-            <button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-upload"></i> Bắt đầu Import</button>
-            <p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 10px;"></p>
+            <button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-save"></i> Lưu vào Thư viện</button>
+            <p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 5px;"></p>
         </div>
-        <div class="sidebar-section">
-            <h3>2. Khởi tạo phòng học</h3>
-            <button class="sidebar-btn btn-create-room" id="btnInitRoom"><i class="fas fa-plus-circle"></i> Mở phòng mới (Tạo mã PIN)</button>
-        </div>
+
         <div class="sidebar-section">
             <h3>Danh sách học viên (<span id="playerCountSidebar">0</span>)</h3>
             <ul class="player-list-container" id="playerList"></ul>
@@ -106,7 +142,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where } 
+        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -122,8 +158,8 @@
 
         let currentRoomPin = "";
         let playerUnsubscribe = null;
+        let currentActiveSetId = ""; 
 
-        // UI Controls
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         document.getElementById('btnToggleMenu').addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('active'); });
@@ -131,94 +167,128 @@
         document.getElementById('btnCloseMenu').addEventListener('click', closeMenu);
         overlay.addEventListener('click', closeMenu);
 
-        // Fullscreen API
         const elem = document.documentElement;
         document.getElementById('btnFullscreen').addEventListener('click', () => {
             if (!document.fullscreenElement) {
-                if (elem.requestFullscreen) { elem.requestFullscreen(); }
-                else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
+                if (elem.requestFullscreen) elem.requestFullscreen();
+                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
             } else {
-                if (document.exitFullscreen) { document.exitFullscreen(); }
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         });
 
-        // 1. IMPORT EXCEL
+        // 1. TẢI DANH SÁCH THƯ VIỆN
+        async function loadLibrary() {
+            const querySnapshot = await getDocs(collection(db, "QuestionSets"));
+            const libUI = document.getElementById("librarySets");
+            libUI.innerHTML = "";
+
+            if (querySnapshot.empty) {
+                libUI.innerHTML = "<p style='font-size: 13px; color: #777; text-align: center; padding: 10px;'>Chưa có bộ câu hỏi nào.</p>";
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const item = document.createElement("div");
+                item.className = "library-item";
+                
+                const info = document.createElement("div");
+                info.innerHTML = `<b>${data.name}</b><br><span style="color:#7f8c8d">${data.questions.length} câu</span>`;
+                
+                const btnOpen = document.createElement("button");
+                btnOpen.className = "btn-open-room";
+                btnOpen.innerText = "Mở phòng";
+                btnOpen.addEventListener('click', () => initRoom(docSnap.id, data.name));
+
+                item.appendChild(info);
+                item.appendChild(btnOpen);
+                libUI.appendChild(item);
+            });
+        }
+        loadLibrary();
+
+        // 2. IMPORT BỘ CÂU HỎI MỚI
         document.getElementById('btnImport').addEventListener('click', () => {
+            const setNameInput = document.getElementById('newSetName').value.trim();
             const fileInput = document.getElementById('fileUpload');
-            const file = fileInput.files[0];
             const statusText = document.getElementById('importStatus');
             
-            if (!file) { alert("Vui lòng chọn file Excel!"); return; }
+            if (!setNameInput) { alert("Vui lòng đặt tên cho Bộ câu hỏi!"); return; }
+            if (!fileInput.files[0]) { alert("Vui lòng chọn file Excel!"); return; }
 
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
-                    statusText.innerText = "Đang đọc file...";
+                    statusText.style.color = "#d35400";
+                    statusText.innerText = "Đang xử lý file...";
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet);
                     
                     const validQuestions = jsonData.filter(row => row['Question Text']);
-                    const totalQuestions = validQuestions.length;
-                    
-                    if(totalQuestions === 0) { statusText.innerText = "Lỗi: File không đúng định dạng Quizizz."; return; }
+                    if(validQuestions.length === 0) { statusText.innerText = "Lỗi: File không hợp lệ."; return; }
 
-                    let successCount = 0;
-                    for (let i = 0; i < totalQuestions; i++) {
+                    let questionsArray = [];
+                    for (let i = 0; i < validQuestions.length; i++) {
                         const row = validQuestions[i];
-                        const qId = i + 1;
-                        statusText.innerText = `Đang tải: Câu ${qId} / ${totalQuestions}...`;
-                        
-                        await setDoc(doc(db, "Questions", "q" + qId), {
-                            id: qId,
+                        questionsArray.push({
+                            id: i + 1,
                             text: row['Question Text'],
                             options: [ row['Option 1'] || "", row['Option 2'] || "", row['Option 3'] || "", row['Option 4'] || "" ],
                             correct_answer: parseInt(row['Correct Answer']) || 1,
                             time_limit: parseInt(row['Time in seconds']) || 60
                         });
-                        successCount++;
                     }
+
+                    statusText.innerText = "Đang lưu vào thư viện Firebase...";
+                    await addDoc(collection(db, "QuestionSets"), {
+                        name: setNameInput, created_at: Date.now(), questions: questionsArray
+                    });
+
                     statusText.style.color = "green";
-                    statusText.innerText = `Đã nạp xong ${successCount} câu hỏi!`;
+                    statusText.innerText = `Đã lưu thành công bộ: ${setNameInput}`;
+                    document.getElementById('newSetName').value = "";
+                    document.getElementById('fileUpload').value = "";
+                    loadLibrary();
+
                 } catch (error) {
                     console.error(error);
                     statusText.style.color = "red";
-                    statusText.innerText = "Lỗi đọc file!";
+                    statusText.innerText = "Có lỗi xảy ra khi lưu file!";
                 }
             };
-            reader.readAsArrayBuffer(file);
+            reader.readAsArrayBuffer(fileInput.files[0]);
         });
 
-        // 2. KHỞI TẠO PHÒNG & QR CODE
-        document.getElementById('btnInitRoom').addEventListener('click', async () => {
+        // 3. KHỞI TẠO PHÒNG
+        async function initRoom(setId, setName) {
             currentRoomPin = Math.floor(1000 + Math.random() * 9000).toString();
+            currentActiveSetId = setId;
             
             await setDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                status: "lobby",
-                current_question: 0,
-                start_time: 0
+                status: "lobby", active_set_id: setId, current_question: 0, start_time: 0
             });
             
             document.getElementById('welcomeMessage').style.display = 'none';
             document.getElementById('gameView').style.display = 'none';
             document.getElementById('lobbyView').style.display = 'block';
             document.getElementById('displayPin').innerText = currentRoomPin;
+            document.getElementById('currentSetNameDisplay').innerText = setName; 
             
-            // Generate QR
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = ""; 
             const studentUrl = `https://hocvienungdungai008-dotcom.github.io/myquiz/?pin=${currentRoomPin}`;
             new QRCode(qrContainer, {
-                text: studentUrl, width: 200, height: 200,
-                colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
+                text: studentUrl, width: 200, height: 200, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
             });
 
             closeMenu();
             listenToPlayers(currentRoomPin);
-        });
+        }
 
-        // LỌC DANH SÁCH THEO MÃ PIN
+        // 4. LẮNG NGHE & HIỆN TÊN HỌC VIÊN LÊN MÀN HÌNH
         function listenToPlayers(pin) {
             if (playerUnsubscribe) { playerUnsubscribe(); }
             const q = query(collection(db, "Players"), where("room_pin", "==", pin));
@@ -228,23 +298,33 @@
                 document.getElementById('playerCountMain').innerText = count;
                 document.getElementById('playerCountSidebar').innerText = count;
                 
-                const listUI = document.getElementById('playerList');
+                const listUI = document.getElementById('playerList'); // Cột sidebar
+                const mainGridUI = document.getElementById('mainPlayerList'); // Màn hình chính
+                
                 listUI.innerHTML = ""; 
+                mainGridUI.innerHTML = ""; 
+                
                 snapshot.forEach((doc) => {
                     const player = doc.data();
+                    
+                    // Add vào Menu ẩn
                     const li = document.createElement('li');
                     li.innerText = player.name; 
                     listUI.appendChild(li);
+
+                    // Add vào Màn hình chính
+                    const chip = document.createElement('div');
+                    chip.className = 'player-chip';
+                    chip.innerText = player.name;
+                    mainGridUI.appendChild(chip);
                 });
             });
         }
 
-        // 3. BẮT ĐẦU GAME
+        // 5. BẮT ĐẦU GAME
         document.getElementById('btnStartGame').addEventListener('click', async () => {
             await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                status: "playing",
-                current_question: 1,
-                start_time: Date.now()
+                status: "playing", current_question: 1, start_time: Date.now()
             });
             document.getElementById('lobbyView').style.display = 'none';
             document.getElementById('gameView').style.display = 'block';
