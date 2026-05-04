@@ -15,7 +15,6 @@
         .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #2c3e50; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .icon-btn { background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 10px; transition: color 0.3s; }
         
-        /* Chỉnh lại chiều cao vùng trình chiếu để đẩy thanh điều khiển xuống đáy */
         .presentation-area { margin-top: 60px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: calc(100vh - 60px); width: 100%;}
         
         /* LOBBY */
@@ -38,9 +37,7 @@
 
         /* GIAO DIỆN CHƠI GAME & ĐÁP ÁN */
         #gameView { width: 100%; max-width: 1400px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-        
         .content-area { flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
-
         .question-text-box { background: white; width: 100%; padding: 40px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; font-size: 36px; font-weight: bold; color: #2c3e50; line-height: 1.4; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
         .opt-box { display: flex; align-items: center; padding: 25px; border-radius: 8px; color: white; font-size: 28px; font-weight: bold; min-height: 120px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); transition: all 0.3s ease; position: relative; }
@@ -62,26 +59,16 @@
         .lb-name { flex: 1; padding-left: 20px; text-align: left; }
         .lb-score { background: rgba(0,0,0,0.1); padding: 5px 15px; border-radius: 20px; }
 
-        /* ========================================== */
-        /* CSS MỚI: THANH ĐIỀU KHIỂN DƯỚI CÙNG */
-        /* ========================================== */
-        .bottom-control-bar {
-            background: white; width: 100%; padding: 15px 30px; border-radius: 15px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between;
-            align-items: center; margin-top: 20px;
-        }
-        .timer-badge {
-            background: #9b59b6; color: white; padding: 10px 30px; border-radius: 30px;
-            font-size: 32px; font-weight: bold; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3); min-width: 160px; justify-content: center;
-        }
+        /* THANH ĐIỀU KHIỂN DƯỚI CÙNG */
+        .bottom-control-bar { background: white; width: 100%; padding: 15px 30px; border-radius: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+        .timer-badge { background: #9b59b6; color: white; padding: 10px 30px; border-radius: 30px; font-size: 32px; font-weight: bold; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3); min-width: 160px; justify-content: center; }
         .timer-badge i { font-size: 28px; }
         .control-actions { display: flex; gap: 15px; }
-        .btn-skip { background: #e74c3c; } /* Nút Đóng / Chốt đáp án */
+        .btn-skip { background: #e74c3c; } 
         .btn-leaderboard { background: #8e44ad; }
         .btn-next { background: #3498db; }
 
-        /* SIDEBAR MENU */
+        /* SIDEBAR MENU VÀ NÚT XÓA BỘ ĐỀ */
         .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.2); z-index: 1001; transition: left 0.3s ease; padding: 20px; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
@@ -92,10 +79,15 @@
         input[type="file"] { width: 100%; margin-bottom: 10px; font-size: 14px; }
         .sidebar-btn { width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-import { background: #3498db; color: white; margin-bottom: 10px;}
-        .library-list { max-height: 200px; overflow-y: auto; background: white; border: 1px solid #ddd; border-radius: 5px; padding: 5px; }
+        
+        .library-list { max-height: 250px; overflow-y: auto; background: white; border: 1px solid #ddd; border-radius: 5px; padding: 5px; }
         .library-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
         .library-item:last-child { border-bottom: none; }
-        .btn-open-room { background: #9b59b6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .lib-item-info { flex: 1; padding-right: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .lib-item-actions { display: flex; gap: 5px; }
+        .btn-open-room { background: #9b59b6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-delete-room { background: #e74c3c; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; }
+
         .player-list-container { max-height: 200px; overflow-y: auto; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;}
         .player-list-container li { padding: 8px 5px; border-bottom: 1px dashed #eee; list-style: none; font-size: 16px;}
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
@@ -141,9 +133,7 @@
         <!-- KHUNG CHỨA CÂU HỎI VÀ BẢNG ĐIỀU KHIỂN -->
         <div id="gameView" style="display: none;">
             
-            <!-- KHU VỰC HIỂN THỊ NỘI DUNG (CÂU HỎI HOẶC BẢNG XẾP HẠNG) -->
             <div class="content-area">
-                
                 <div id="questionContainer" style="width: 100%;">
                     <div class="question-text-box" id="qText">Đang tải câu hỏi...</div>
                     <div class="options-grid">
@@ -158,26 +148,20 @@
                     <h2 class="lb-title"><i class="fas fa-medal"></i> TOP 10 HỌC VIÊN XUẤT SẮC</h2>
                     <ul class="lb-list" id="topPlayersList"></ul>
                 </div>
-
             </div>
 
-            <!-- THANH ĐIỀU KHIỂN DƯỚI CÙNG (GOM TẤT CẢ NÚT VỀ ĐÂY) -->
+            <!-- THANH ĐIỀU KHIỂN DƯỚI CÙNG -->
             <div class="bottom-control-bar">
-                
-                <!-- BÊN TRÁI: ĐỒNG HỒ -->
                 <div class="timer-badge" id="timerDisplayWrapper">
                     <i class="fas fa-stopwatch"></i> <span id="timerDisplay">60</span>s
                 </div>
                 
-                <!-- BÊN PHẢI: CÁC NÚT ĐIỀU KHIỂN (Thay đổi hiển thị theo ngữ cảnh) -->
                 <div class="control-actions">
                     <button class="action-btn btn-skip" id="btnSkipTimer"><i class="fas fa-hand-paper"></i> CHỐT ĐÁP ÁN SỚM</button>
                     <button class="action-btn btn-leaderboard" id="btnShowLeaderboard" style="display: none;">XEM BẢNG XẾP HẠNG <i class="fas fa-trophy"></i></button>
                     <button class="action-btn btn-next" id="btnNextQuestion" style="display: none;">CÂU TIẾP THEO <i class="fas fa-arrow-right"></i></button>
                 </div>
-
             </div>
-            
         </div>
     </div>
 
@@ -185,14 +169,32 @@
     <div class="overlay" id="overlay"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h2>Cài đặt & Quản lý</h2><button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button></div>
-        <div class="sidebar-section"><h3><i class="fas fa-book"></i> Thư viện câu hỏi</h3><div class="library-list" id="librarySets"><p style="font-size: 13px; color: #777; text-align: center; padding: 10px;">Đang tải...</p></div></div>
-        <div class="sidebar-section"><h3><i class="fas fa-plus-square"></i> Thêm bộ câu hỏi mới</h3><input type="text" id="newSetName" class="txt-input" placeholder="Tên bộ câu hỏi (VD: An toàn điện)"><input type="file" id="fileUpload" accept=".xlsx, .xls"><button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-save"></i> Lưu vào Thư viện</button><p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 5px;"></p></div>
-        <div class="sidebar-section"><h3>Danh sách học viên (<span id="playerCountSidebar">0</span>)</h3><ul class="player-list-container" id="playerList"></ul></div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-book"></i> Thư viện câu hỏi</h3>
+            <div class="library-list" id="librarySets">
+                <p style="font-size: 13px; color: #777; text-align: center; padding: 10px;">Đang tải...</p>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-plus-square"></i> Thêm bộ câu hỏi mới</h3>
+            <input type="text" id="newSetName" class="txt-input" placeholder="Tên bộ câu hỏi (VD: An toàn điện)">
+            <input type="file" id="fileUpload" accept=".xlsx, .xls">
+            <button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-save"></i> Lưu vào Thư viện</button>
+            <p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 5px;"></p>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Danh sách học viên (<span id="playerCountSidebar">0</span>)</h3>
+            <ul class="player-list-container" id="playerList"></ul>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc, getDoc } 
+        // Import thêm hàm deleteDoc
+        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc, getDoc, deleteDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0", authDomain: "myquiz-e696f.firebaseapp.com", projectId: "myquiz-e696f", storageBucket: "myquiz-e696f.firebasestorage.app", messagingSenderId: "609107578436", appId: "1:609107578436:web:0a042fb99e00c2212f3611" };
@@ -214,13 +216,57 @@
         async function loadLibrary() {
             const querySnapshot = await getDocs(collection(db, "QuestionSets"));
             const libUI = document.getElementById("librarySets"); libUI.innerHTML = "";
+            
+            if(querySnapshot.empty) {
+                libUI.innerHTML = "<p style='font-size: 13px; color: #777; text-align: center; padding: 10px;'>Thư viện trống.</p>";
+                return;
+            }
+
             querySnapshot.forEach((docSnap) => {
-                const data = docSnap.data(); const item = document.createElement("div"); item.className = "library-item";
-                item.innerHTML = `<div><b>${data.name}</b><br><span style="color:#7f8c8d">${data.questions.length} câu</span></div>`;
-                const btnOpen = document.createElement("button"); btnOpen.className = "btn-open-room"; btnOpen.innerText = "Mở phòng";
-                btnOpen.addEventListener('click', () => initRoom(docSnap.id, data.name)); item.appendChild(btnOpen); libUI.appendChild(item);
+                const data = docSnap.data(); 
+                const item = document.createElement("div"); 
+                item.className = "library-item";
+                
+                const infoDiv = document.createElement("div");
+                infoDiv.className = "lib-item-info";
+                infoDiv.innerHTML = `<b>${data.name}</b><br><span style="color:#7f8c8d">${data.questions.length} câu</span>`;
+                
+                const actionsDiv = document.createElement("div");
+                actionsDiv.className = "lib-item-actions";
+
+                const btnOpen = document.createElement("button"); 
+                btnOpen.className = "btn-open-room"; 
+                btnOpen.innerText = "Mở";
+                btnOpen.title = "Mở phòng học";
+                btnOpen.addEventListener('click', () => initRoom(docSnap.id, data.name)); 
+
+                // Thêm nút Xóa
+                const btnDelete = document.createElement("button");
+                btnDelete.className = "btn-delete-room";
+                btnDelete.innerHTML = '<i class="fas fa-trash"></i>';
+                btnDelete.title = "Xóa bộ đề";
+                btnDelete.addEventListener('click', async () => {
+                    // Cảnh báo xác nhận trước khi xóa
+                    if(confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn bộ đề "${data.name}" không?`)) {
+                        try {
+                            await deleteDoc(doc(db, "QuestionSets", docSnap.id));
+                            loadLibrary(); // Tải lại danh sách
+                        } catch (e) {
+                            console.error("Lỗi khi xóa:", e);
+                            alert("Có lỗi xảy ra khi xóa bộ đề.");
+                        }
+                    }
+                });
+
+                actionsDiv.appendChild(btnOpen);
+                actionsDiv.appendChild(btnDelete);
+                
+                item.appendChild(infoDiv); 
+                item.appendChild(actionsDiv); 
+                libUI.appendChild(item);
             });
-        } loadLibrary();
+        } 
+        loadLibrary();
 
         document.getElementById('btnImport').addEventListener('click', () => {
             const setNameInput = document.getElementById('newSetName').value.trim(); const fileInput = document.getElementById('fileUpload');
@@ -233,6 +279,10 @@
                 let questionsArray = validQuestions.map((row, i) => ({ id: i + 1, text: row['Question Text'], options: [ row['Option 1'] || "", row['Option 2'] || "", row['Option 3'] || "", row['Option 4'] || "" ], correct_answer: parseInt(row['Correct Answer']) || 1, time_limit: parseInt(row['Time in seconds']) || 60 }));
                 await addDoc(collection(db, "QuestionSets"), { name: setNameInput, created_at: Date.now(), questions: questionsArray });
                 document.getElementById('importStatus').style.color = "green"; document.getElementById('importStatus').innerText = `Thành công!`;
+                
+                // Xóa form
+                document.getElementById('newSetName').value = "";
+                document.getElementById('fileUpload').value = "";
                 loadLibrary();
             }; reader.readAsArrayBuffer(fileInput.files[0]);
         });
@@ -265,11 +315,10 @@
             });
         }
 
-        // ĐIỀU KHIỂN GAME (TÍCH HỢP THANH CONTROL BAR)
+        // ĐIỀU KHIỂN GAME TÍCH HỢP CONTROL BAR
         function renderQuestion(index) {
             const q = activeQuestionList[index];
             
-            // Xử lý Giao diện chính
             document.getElementById('questionContainer').style.display = 'block';
             document.getElementById('leaderboardView').style.display = 'none';
             document.querySelectorAll('.opt-box').forEach(box => { box.classList.remove('opt-dimmed', 'opt-correct'); });
@@ -279,7 +328,6 @@
             document.getElementById('txtA').innerText = q.options[0]; document.getElementById('txtB').innerText = q.options[1]; document.getElementById('txtC').innerText = q.options[2]; document.getElementById('txtD').innerText = q.options[3];
             document.getElementById('boxA').style.display = q.options[0] ? 'flex' : 'none'; document.getElementById('boxB').style.display = q.options[1] ? 'flex' : 'none'; document.getElementById('boxC').style.display = q.options[2] ? 'flex' : 'none'; document.getElementById('boxD').style.display = q.options[3] ? 'flex' : 'none';
 
-            // Xử lý Thanh điều khiển dưới cùng
             document.getElementById('timerDisplayWrapper').style.visibility = 'visible';
             document.getElementById('btnSkipTimer').style.display = 'block';
             document.getElementById('btnShowLeaderboard').style.display = 'none';
@@ -314,23 +362,19 @@
 
             await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "reveal", correct_answer: correctAns });
 
-            // Cập nhật thanh điều khiển
             document.getElementById('btnSkipTimer').style.display = 'none';
             document.getElementById('btnShowLeaderboard').style.display = 'block';
         };
 
-        // Nút Chốt đáp án sớm
         document.getElementById('btnSkipTimer').addEventListener('click', revealAnswerLogic);
 
-        // Nút Xem Bảng xếp hạng
         document.getElementById('btnShowLeaderboard').addEventListener('click', async () => {
             await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "leaderboard" });
             
             document.getElementById('questionContainer').style.display = 'none';
             document.getElementById('leaderboardView').style.display = 'flex';
             
-            // Cập nhật thanh điều khiển
-            document.getElementById('timerDisplayWrapper').style.visibility = 'hidden'; // Ẩn đồng hồ đi
+            document.getElementById('timerDisplayWrapper').style.visibility = 'hidden'; 
             document.getElementById('btnShowLeaderboard').style.display = 'none';
             document.getElementById('btnNextQuestion').style.display = 'block';
 
@@ -363,7 +407,6 @@
             }
         });
 
-        // Nút Câu tiếp theo / Kết thúc
         document.getElementById('btnNextQuestion').addEventListener('click', async () => {
             currentQuestionIndex++;
             if (currentQuestionIndex < activeQuestionList.length) {
