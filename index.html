@@ -5,86 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tham gia Quiz</title>
     <style>
-        /* CSS Reset & Cấu hình cơ bản */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            /* Giao diện nền chuyển màu gradient hiện đại */
             background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); 
-            color: #333; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh;
-            overflow: hidden;
+            color: #333; display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden;
         }
 
-        /* Khung nội dung chính bo tròn, đổ bóng nổi bật trên nền */
-        .card {
-            background: white;
-            padding: 40px 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
+        /* Khung đăng nhập & chờ */
+        .card { background: white; padding: 40px 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
         .logo { font-size: 28px; font-weight: 900; color: #4b6cb7; margin-bottom: 20px; }
         
-        /* Căn chỉnh Input to, rõ ràng, dễ bấm trên cảm ứng */
-        input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            text-align: center;
-            font-weight: bold;
-            transition: border-color 0.3s;
-            outline: none;
-        }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold; outline: none; }
         input:focus { border-color: #4b6cb7; }
-        
-        /* Ẩn mũi tên lên xuống của thẻ input type="number" */
-        input[type="number"]::-webkit-outer-spin-button, 
-        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[readonly] { background-color: #f8f9fa; cursor: not-allowed; color: #7f8c8d; }
 
-        /* Nút bấm nổi bật */
-        button {
-            width: 100%;
-            padding: 16px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);
-            transition: transform 0.1s, background 0.3s;
-        }
+        button { width: 100%; padding: 16px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3); transition: transform 0.1s; }
         button:active { transform: scale(0.97); }
         button:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
 
-        /* Dòng thông báo lỗi */
-        #error-msg {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 10px;
-            font-weight: bold;
-            min-height: 20px;
-        }
+        #error-msg { color: #dc3545; font-size: 14px; margin-top: 10px; font-weight: bold; min-height: 20px; }
 
-        /* Hiệu ứng xoay chờ khi vào lớp */
-        .loader {
-            border: 5px solid #f3f3f3; border-top: 5px solid #4b6cb7;
-            border-radius: 50%; width: 40px; height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #4b6cb7; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Giao diện 4 nút khi Playing (Kahoot Style) */
+        #playing-screen { display: none; width: 100%; height: 100vh; padding: 10px; flex-direction: column; justify-content: center; }
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; height: 100%; width: 100%; max-width: 600px; margin: 0 auto; }
+        .answer-btn { border: none; border-radius: 8px; font-size: 36px; color: white; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
+        .answer-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+        
+        .btn-a { background-color: #e21b3c; } /* Đỏ */
+        .btn-b { background-color: #1368ce; } /* Xanh dương */
+        .btn-c { background-color: #d89e00; } /* Vàng */
+        .btn-d { background-color: #26890c; } /* Xanh lá */
     </style>
 </head>
 <body>
@@ -98,18 +54,26 @@
         <div id="error-msg"></div>
     </div>
 
-    <!-- MÀN HÌNH CHỜ SAU KHI VÀO LỚP THÀNH CÔNG -->
+    <!-- MÀN HÌNH CHỜ -->
     <div id="waiting-screen" class="card" style="display: none;">
         <div class="loader"></div>
         <h2 style="color: #28a745; margin-bottom: 10px;">Đã vào lớp!</h2>
         <p style="color: #666; font-size: 15px;">Bạn đã có tên trên màn hình.<br>Vui lòng chờ giảng viên bắt đầu...</p>
     </div>
 
-    <!-- SCRIPT TÍCH HỢP FIREBASE -->
+    <!-- MÀN HÌNH CHƠI GAME (4 NÚT) -->
+    <div id="playing-screen">
+        <div class="grid-container">
+            <button class="answer-btn btn-a" data-answer="1">A</button>
+            <button class="answer-btn btn-b" data-answer="2">B</button>
+            <button class="answer-btn btn-c" data-answer="3">C</button>
+            <button class="answer-btn btn-d" data-answer="4">D</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        // Bổ sung thêm hàm getDoc để truy vấn dữ liệu 1 lần (kiểm tra phòng)
-        import { getFirestore, collection, addDoc, doc, onSnapshot, getDoc } 
+        import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, getDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -118,98 +82,115 @@
             projectId: "myquiz-e696f",
             storageBucket: "myquiz-e696f.firebasestorage.app",
             messagingSenderId: "609107578436",
-            appId: "1:609107578436:web:0a042fb99e00c2212f3611",
-            measurementId: "G-75BKW41Y6B"
+            appId: "1:609107578436:web:0a042fb99e00c2212f3611"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // LẤY MÃ PIN TỪ URL (NẾU QUÉT QR)
+        const urlParams = new URLSearchParams(window.location.search);
+        const pinFromUrl = urlParams.get('pin');
+        if(pinFromUrl) {
+            const pinInput = document.getElementById('roomPin');
+            pinInput.value = pinFromUrl;
+            pinInput.setAttribute('readonly', true); // Khóa không cho sửa
+        }
+
         const btnJoin = document.getElementById('btnJoin');
         const errorMsg = document.getElementById('error-msg');
+        let myPlayerId = "";
 
-        // Chặn nhập quá 4 số vào ô PIN
+        // Chặn nhập quá 4 số
         document.getElementById('roomPin').addEventListener('input', function() {
             if (this.value.length > 4) this.value = this.value.slice(0, 4);
         });
 
+        // XỬ LÝ VÀO LỚP
         btnJoin.addEventListener('click', async () => {
             const pin = document.getElementById('roomPin').value;
             const name = document.getElementById('playerName').value.trim();
+            errorMsg.innerText = "";
 
-            errorMsg.innerText = ""; // Xóa lỗi cũ
-
-            if(pin.length !== 4) {
-                errorMsg.innerText = "Mã lớp phải có đúng 4 chữ số!";
-                return;
-            }
-            if(!name) {
-                errorMsg.innerText = "Vui lòng nhập họ và tên!";
-                return;
-            }
+            if(pin.length !== 4) { errorMsg.innerText = "Mã lớp phải có 4 chữ số!"; return; }
+            if(!name) { errorMsg.innerText = "Vui lòng nhập họ và tên!"; return; }
 
             btnJoin.disabled = true;
             btnJoin.innerText = "ĐANG KIỂM TRA...";
 
             try {
-                // 1. KIỂM TRA LỚP HỌC CÓ TỒN TẠI VÀ ĐANG MỞ KHÔNG?
-                // Giả định giảng viên tạo document có tên định dạng: "Room_1234"
                 const roomRef = doc(db, "GameSession", "Room_" + pin);
                 const roomSnap = await getDoc(roomRef);
 
                 if (!roomSnap.exists()) {
                     errorMsg.innerText = "Lớp học chưa mở hoặc sai mã lớp!";
-                    btnJoin.disabled = false;
-                    btnJoin.innerText = "VÀO LỚP";
-                    return;
+                    btnJoin.disabled = false; btnJoin.innerText = "VÀO LỚP"; return;
+                }
+                if (roomSnap.data().status !== "lobby") {
+                    errorMsg.innerText = "Lớp học này đã bắt đầu!";
+                    btnJoin.disabled = false; btnJoin.innerText = "VÀO LỚP"; return;
                 }
 
-                const roomData = roomSnap.data();
-                if (roomData.status !== "lobby") {
-                    errorMsg.innerText = "Lớp học này đã bắt đầu, không thể tham gia nữa!";
-                    btnJoin.disabled = false;
-                    btnJoin.innerText = "VÀO LỚP";
-                    return;
-                }
-
-                // 2. NẾU LỚP HỢP LỆ, LƯU HỌC VIÊN VÀO DATA
+                // Lưu học viên lên Firestore
                 const docRef = await addDoc(collection(db, "Players"), {
-                    name: name,
-                    room_pin: pin, // Lưu kèm mã lớp để phân biệt nếu có nhiều lớp chạy song song
-                    score: 0,
-                    last_answer: "",
-                    answer_time: 0
+                    name: name, room_pin: pin, score: 0, last_answer: "", answer_time: 0
                 });
                 
-                localStorage.setItem("playerId", docRef.id);
-                localStorage.setItem("roomPin", pin); // Lưu mã phòng để theo dõi
+                myPlayerId = docRef.id; // Lưu ID để lát ghi đáp án
                 
-                // 3. CHUYỂN GIAO DIỆN SANG MÀN HÌNH CHỜ
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('waiting-screen').style.display = 'block';
 
-                // Bắt đầu lắng nghe trạng thái của phòng học đó
-                listenToGameStatus("Room_" + pin);
+                listenToGameStatus(pin);
 
             } catch (e) {
                 console.error(e);
-                errorMsg.innerText = "Lỗi kết nối mạng, vui lòng thử lại!";
-                btnJoin.disabled = false;
-                btnJoin.innerText = "VÀO LỚP";
+                errorMsg.innerText = "Lỗi kết nối mạng!";
+                btnJoin.disabled = false; btnJoin.innerText = "VÀO LỚP";
             }
         });
 
-        function listenToGameStatus(roomId) {
-            onSnapshot(doc(db, "GameSession", roomId), (docSnap) => {
+        // LẮNG NGHE TRẠNG THÁI TỪ GIẢNG VIÊN
+        function listenToGameStatus(pin) {
+            onSnapshot(doc(db, "GameSession", "Room_" + pin), (docSnap) => {
                 if (docSnap.exists()) {
                     const gameData = docSnap.data();
-                    console.log("Trạng thái:", gameData.status);
                     
-                    // Logic chuyển sang màn hình 4 ô màu trả lời trắc nghiệm sẽ viết ở đây
-                    // if (gameData.status === "playing") { ... }
+                    if (gameData.status === "playing") {
+                        // Giảng viên bấm bắt đầu -> Hiện 4 nút màu
+                        document.getElementById('waiting-screen').style.display = 'none';
+                        document.getElementById('playing-screen').style.display = 'flex';
+                        document.body.style.background = "#f0f0f0"; // Đổi nền sáng cho dễ nhìn nút
+                    } 
+                    else if (gameData.status === "lobby") {
+                        document.getElementById('waiting-screen').style.display = 'block';
+                        document.getElementById('playing-screen').style.display = 'none';
+                    }
                 }
             });
         }
+
+        // XỬ LÝ BẤM CHỌN ĐÁP ÁN
+        const answerBtns = document.querySelectorAll('.answer-btn');
+        answerBtns.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const answerValue = e.target.getAttribute('data-answer');
+                
+                // Cập nhật đáp án lên Firestore
+                if(myPlayerId) {
+                    await updateDoc(doc(db, "Players", myPlayerId), {
+                        last_answer: parseInt(answerValue),
+                        answer_time: Date.now()
+                    });
+                    
+                    // Hiện trạng thái đã nộp bài (Chờ kết quả)
+                    document.getElementById('playing-screen').style.display = 'none';
+                    document.getElementById('waiting-screen').style.display = 'block';
+                    document.getElementById('waiting-screen').querySelector('h2').innerText = "Đã gửi đáp án!";
+                    document.getElementById('waiting-screen').querySelector('p').innerText = "Vui lòng nhìn lên màn hình chính chờ kết quả.";
+                    document.body.style.background = "linear-gradient(135deg, #4b6cb7 0%, #182848 100%)";
+                }
+            });
+        });
     </script>
 </body>
 </html>
