@@ -2,32 +2,116 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tham gia Quiz</title>
     <style>
-        /* CSS cơ bản: Sẽ thêm các khối màu A, B, C, D sau */
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        /* CSS Reset & Cấu hình cơ bản */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            /* Giao diện nền chuyển màu gradient hiện đại */
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Khung nội dung chính bo tròn, đổ bóng nổi bật trên nền */
+        .card {
+            background: white;
+            padding: 40px 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo { font-size: 28px; font-weight: 900; color: #4b6cb7; margin-bottom: 20px; }
+        
+        /* Căn chỉnh Input to, rõ ràng, dễ bấm trên cảm ứng */
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+        input:focus { border-color: #4b6cb7; }
+        
+        /* Ẩn mũi tên lên xuống của thẻ input type="number" */
+        input[type="number"]::-webkit-outer-spin-button, 
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Nút bấm nổi bật */
+        button {
+            width: 100%;
+            padding: 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);
+            transition: transform 0.1s, background 0.3s;
+        }
+        button:active { transform: scale(0.97); }
+        button:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+
+        /* Dòng thông báo lỗi */
+        #error-msg {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        /* Hiệu ứng xoay chờ khi vào lớp */
+        .loader {
+            border: 5px solid #f3f3f3; border-top: 5px solid #4b6cb7;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div id="login-screen">
-        <h2>Nhập tên để vào lớp</h2>
-        <input type="text" id="playerName" placeholder="Họ và Tên">
+
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="login-screen" class="card">
+        <div class="logo">HSE QUIZ</div>
+        <input type="number" id="roomPin" placeholder="Mã lớp (4 số)" pattern="\d{4}" maxlength="4">
+        <input type="text" id="playerName" placeholder="Họ và tên của bạn">
         <button id="btnJoin">VÀO LỚP</button>
+        <div id="error-msg"></div>
     </div>
 
-    <div id="waiting-screen" style="display: none;">
-        <h3>Đang chờ giảng viên bắt đầu...</h3>
+    <!-- MÀN HÌNH CHỜ SAU KHI VÀO LỚP THÀNH CÔNG -->
+    <div id="waiting-screen" class="card" style="display: none;">
+        <div class="loader"></div>
+        <h2 style="color: #28a745; margin-bottom: 10px;">Đã vào lớp!</h2>
+        <p style="color: #666; font-size: 15px;">Bạn đã có tên trên màn hình.<br>Vui lòng chờ giảng viên bắt đầu...</p>
     </div>
 
-    <!-- Script kết nối Firebase (Dùng type="module") -->
+    <!-- SCRIPT TÍCH HỢP FIREBASE -->
     <script type="module">
-        // Import các hàm cần thiết từ thư viện Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot } 
+        // Bổ sung thêm hàm getDoc để truy vấn dữ liệu 1 lần (kiểm tra phòng)
+        import { getFirestore, collection, addDoc, doc, onSnapshot, getDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // Cấu hình Firebase của dự án myquiz-e696f
         const firebaseConfig = {
             apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0",
             authDomain: "myquiz-e696f.firebaseapp.com",
@@ -38,45 +122,92 @@
             measurementId: "G-75BKW41Y6B"
         };
 
-        // Khởi tạo Firebase và Firestore
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Nơi viết Logic xử lý cho học viên
         const btnJoin = document.getElementById('btnJoin');
-        btnJoin.addEventListener('click', async () => {
-            const name = document.getElementById('playerName').value;
-            if(!name) return alert("Vui lòng nhập tên!");
+        const errorMsg = document.getElementById('error-msg');
 
-            // 1. Lưu tên vào Collection 'Players'
+        // Chặn nhập quá 4 số vào ô PIN
+        document.getElementById('roomPin').addEventListener('input', function() {
+            if (this.value.length > 4) this.value = this.value.slice(0, 4);
+        });
+
+        btnJoin.addEventListener('click', async () => {
+            const pin = document.getElementById('roomPin').value;
+            const name = document.getElementById('playerName').value.trim();
+
+            errorMsg.innerText = ""; // Xóa lỗi cũ
+
+            if(pin.length !== 4) {
+                errorMsg.innerText = "Mã lớp phải có đúng 4 chữ số!";
+                return;
+            }
+            if(!name) {
+                errorMsg.innerText = "Vui lòng nhập họ và tên!";
+                return;
+            }
+
+            btnJoin.disabled = true;
+            btnJoin.innerText = "ĐANG KIỂM TRA...";
+
             try {
+                // 1. KIỂM TRA LỚP HỌC CÓ TỒN TẠI VÀ ĐANG MỞ KHÔNG?
+                // Giả định giảng viên tạo document có tên định dạng: "Room_1234"
+                const roomRef = doc(db, "GameSession", "Room_" + pin);
+                const roomSnap = await getDoc(roomRef);
+
+                if (!roomSnap.exists()) {
+                    errorMsg.innerText = "Lớp học chưa mở hoặc sai mã lớp!";
+                    btnJoin.disabled = false;
+                    btnJoin.innerText = "VÀO LỚP";
+                    return;
+                }
+
+                const roomData = roomSnap.data();
+                if (roomData.status !== "lobby") {
+                    errorMsg.innerText = "Lớp học này đã bắt đầu, không thể tham gia nữa!";
+                    btnJoin.disabled = false;
+                    btnJoin.innerText = "VÀO LỚP";
+                    return;
+                }
+
+                // 2. NẾU LỚP HỢP LỆ, LƯU HỌC VIÊN VÀO DATA
                 const docRef = await addDoc(collection(db, "Players"), {
                     name: name,
+                    room_pin: pin, // Lưu kèm mã lớp để phân biệt nếu có nhiều lớp chạy song song
                     score: 0,
                     last_answer: "",
                     answer_time: 0
                 });
                 
-                // Lưu ID người chơi vào trình duyệt để dùng cho các câu sau
                 localStorage.setItem("playerId", docRef.id);
+                localStorage.setItem("roomPin", pin); // Lưu mã phòng để theo dõi
                 
-                // Chuyển giao diện
+                // 3. CHUYỂN GIAO DIỆN SANG MÀN HÌNH CHỜ
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('waiting-screen').style.display = 'block';
 
-                // 2. Bắt đầu lắng nghe trạng thái phòng từ Giảng viên
-                listenToGameStatus();
+                // Bắt đầu lắng nghe trạng thái của phòng học đó
+                listenToGameStatus("Room_" + pin);
+
             } catch (e) {
-                console.error("Lỗi khi vào lớp: ", e);
+                console.error(e);
+                errorMsg.innerText = "Lỗi kết nối mạng, vui lòng thử lại!";
+                btnJoin.disabled = false;
+                btnJoin.innerText = "VÀO LỚP";
             }
         });
 
-        function listenToGameStatus() {
-            // Lắng nghe document "Room_01" trong collection "GameSession"
-            const unsub = onSnapshot(doc(db, "GameSession", "Room_01"), (doc) => {
-                const gameData = doc.data();
-                console.log("Trạng thái lớp học hiện tại: ", gameData.status);
-                // Viết code đổi giao diện (Hiện 4 ô màu) dựa trên status tại đây
+        function listenToGameStatus(roomId) {
+            onSnapshot(doc(db, "GameSession", roomId), (docSnap) => {
+                if (docSnap.exists()) {
+                    const gameData = docSnap.data();
+                    console.log("Trạng thái:", gameData.status);
+                    
+                    // Logic chuyển sang màn hình 4 ô màu trả lời trắc nghiệm sẽ viết ở đây
+                    // if (gameData.status === "playing") { ... }
+                }
             });
         }
     </script>
