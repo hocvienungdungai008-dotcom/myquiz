@@ -16,55 +16,86 @@
         .icon-btn { background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 10px; transition: color 0.3s; }
         .icon-btn:hover { color: #3498db; }
         
-        .presentation-area { margin-top: 80px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
-        .room-pin-display { font-size: 56px; font-weight: bold; color: #e74c3c; margin-bottom: 20px; letter-spacing: 8px;}
-        .instruction-text { font-size: 24px; color: #7f8c8d; margin-bottom: 10px; }
+        .presentation-area { margin-top: 60px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 60px); width: 100%;}
         
-        .join-info-container { display: flex; align-items: center; justify-content: center; gap: 40px; margin-bottom: 30px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
-        #qrcode { padding: 10px; background: white; border-radius: 8px; border: 2px solid #ecf0f1;}
+        /* GIAO DIỆN LOBBY (GIỮ NGUYÊN) */
+        #lobbyView { width: 100%; height: 100%; max-width: 1400px; margin: 0 auto; }
+        .lobby-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; height: 100%; padding-top: 20px; }
+        .lobby-left { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .join-info-container { display: flex; align-items: center; justify-content: center; gap: 40px; margin-bottom: 40px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); width: 100%; max-width: 850px;}
+        #qrcode { padding: 15px; background: white; border-radius: 8px; border: 2px solid #ecf0f1;}
         .pin-section { text-align: left; }
-
-        .action-btn { padding: 15px 30px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s; }
+        .instruction-text { font-size: 26px; color: #7f8c8d; margin-bottom: 10px; }
+        .room-pin-display { font-size: 72px; font-weight: bold; color: #e74c3c; margin-bottom: 20px; letter-spacing: 10px; text-shadow: 2px 2px 0px #fceabb;}
+        .action-btn { padding: 18px 40px; font-size: 24px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 6px 10px rgba(0,0,0,0.15); transition: transform 0.1s; width: 100%; max-width: 450px;}
         .action-btn:active { transform: scale(0.95); }
-        .btn-start { background: #2ecc71; margin-bottom: 20px; width: 100%; max-width: 400px;}
+        .btn-start { background: #2ecc71; margin-bottom: 20px;}
+        .lobby-right { background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 20px; display: flex; flex-direction: column; max-height: calc(100vh - 120px); text-align: left; }
+        .lobby-right-header { border-bottom: 2px solid #ecf0f1; padding-bottom: 15px; margin-bottom: 15px; color: #2c3e50; font-size: 18px; font-weight: bold; }
+        .lobby-right-header span { color: #2ecc71; font-size: 28px; }
+        .main-player-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px; }
+        .player-chip { background: #e8f4fd; color: #2980b9; padding: 12px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; border-left: 4px solid #3498db; }
 
-        /* CSS MỚI: Khu vực hiển thị tên học viên trên màn hình chính */
-        .main-player-grid {
-            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
-            max-width: 900px; margin: 0 auto 30px auto; max-height: 250px; overflow-y: auto;
-            padding: 10px;
+        /* ========================================== */
+        /* CSS MỚI: GIAO DIỆN CHƠI GAME (TRÌNH CHIẾU CÂU HỎI) */
+        /* ========================================== */
+        #gameView { width: 100%; max-width: 1400px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .timer-circle { 
+            width: 80px; height: 80px; border-radius: 50%; background: #9b59b6; color: white; 
+            display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold;
+            margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .player-chip {
-            background: #3498db; color: white; padding: 8px 16px; border-radius: 20px;
-            font-size: 18px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            animation: popIn 0.3s ease-out;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        
+        .question-text-box {
+            background: white; width: 100%; padding: 40px; border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+            font-size: 36px; font-weight: bold; color: #2c3e50; line-height: 1.4;
         }
 
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
+        }
+
+        .opt-box {
+            display: flex; align-items: center; padding: 25px; border-radius: 8px; color: white;
+            font-size: 28px; font-weight: bold; min-height: 120px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            transition: opacity 0.3s ease;
+        }
+        
+        /* 4 Màu chuẩn chỉnh giống bộ nút trên điện thoại */
+        .opt-a { background-color: #e21b3c; } /* Đỏ */
+        .opt-b { background-color: #1368ce; } /* Xanh dương */
+        .opt-c { background-color: #d89e00; } /* Vàng */
+        .opt-d { background-color: #26890c; } /* Xanh lá */
+        
+        .opt-icon { font-size: 36px; margin-right: 20px; opacity: 0.8; }
+        
+        /* Trạng thái khi làm mờ đáp án sai */
+        .opt-dimmed { opacity: 0.2; }
+        .opt-correct { border: 4px solid #fff; transform: scale(1.02); }
+
+        .game-controls { margin-top: 30px; display: flex; gap: 20px; }
+        .btn-reveal { background: #f39c12; }
+        .btn-next { background: #3498db; }
+
+        /* SIDEBAR (GIỮ NGUYÊN) */
         .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.2); z-index: 1001; transition: left 0.3s ease; padding: 20px; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #e74c3c; }
-        
         .sidebar-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         .sidebar-section h3 { font-size: 16px; margin-bottom: 10px; color: #2c3e50; }
-        
         .txt-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
         input[type="file"] { width: 100%; margin-bottom: 10px; font-size: 14px; }
         .sidebar-btn { width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-import { background: #3498db; color: white; margin-bottom: 10px;}
-        
         .library-list { max-height: 200px; overflow-y: auto; background: white; border: 1px solid #ddd; border-radius: 5px; padding: 5px; }
         .library-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
         .library-item:last-child { border-bottom: none; }
         .btn-open-room { background: #9b59b6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-
         .player-list-container { max-height: 200px; overflow-y: auto; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;}
         .player-list-container li { padding: 8px 5px; border-bottom: 1px dashed #eee; list-style: none; font-size: 16px;}
-
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
         .overlay.active { display: block; }
     </style>
@@ -72,77 +103,90 @@
 <body>
     <div class="top-bar">
         <button class="icon-btn" id="btnToggleMenu" title="Menu Cài đặt"><i class="fas fa-bars"></i></button>
-        <div style="font-weight: bold; font-size: 20px;">HSE QUIZ - CONTROL PANEL</div>
+        <div style="font-weight: bold; font-size: 20px;">HSE QUIZ - BẢNG ĐIỀU KHIỂN</div>
         <button class="icon-btn" id="btnFullscreen" title="Toàn màn hình"><i class="fas fa-expand"></i></button>
     </div>
 
-    <!-- KHU VỰC TRÌNH CHIẾU TRUNG TÂM -->
     <div class="presentation-area">
-        <div id="welcomeMessage" style="font-size: 24px; color: #7f8c8d;">
-            <i class="fas fa-arrow-left"></i> Vui lòng mở Menu để chọn Bộ câu hỏi và Mở phòng.
+        <div id="welcomeMessage" style="font-size: 24px; color: #7f8c8d; height: 100%; display: flex; align-items: center;">
+            <p><i class="fas fa-arrow-left"></i> Vui lòng mở Menu góc trái để Chọn bộ câu hỏi và Mở phòng.</p>
         </div>
 
         <div id="lobbyView" style="display: none;">
-            <div style="font-size: 20px; font-weight: bold; color: #34495e; margin-bottom: 10px;">
-                Đang mở bộ: <span id="currentSetNameDisplay" style="color: #9b59b6;">---</span>
+            <div class="lobby-layout">
+                <div class="lobby-left">
+                    <div style="font-size: 22px; font-weight: bold; color: #34495e; margin-bottom: 20px;">
+                        Đang mở bộ: <span id="currentSetNameDisplay" style="color: #9b59b6;">---</span>
+                    </div>
+                    <div class="join-info-container">
+                        <div id="qrcode"></div>
+                        <div class="pin-section">
+                            <div class="instruction-text">Yêu cầu học viên nhập mã:</div>
+                            <div class="room-pin-display" id="displayPin">----</div>
+                            <p style="font-size: 20px; color: #555;">Hoặc truy cập link:<br><b style="color: #2980b9;">hocvienungdungai008-dotcom.github.io/myquiz/</b></p>
+                        </div>
+                    </div>
+                    <button class="action-btn btn-start" id="btnStartGame">BẮT ĐẦU TRẮC NGHIỆM</button>
+                </div>
+                <div class="lobby-right">
+                    <div class="lobby-right-header">
+                        Học viên đã vào: <br><span id="playerCountMain">0</span> / 150
+                    </div>
+                    <div class="main-player-list" id="mainPlayerList"></div>
+                </div>
             </div>
+        </div>
+        
+        <!-- ========================================== -->
+        <!-- GIAO DIỆN CÂU HỎI VÀ ĐÁP ÁN (MỚI) -->
+        <!-- ========================================== -->
+        <div id="gameView" style="display: none;">
+            <!-- Đồng hồ đếm ngược -->
+            <div class="timer-circle" id="timerDisplay">60</div>
             
-            <div class="join-info-container">
-                <div id="qrcode"></div>
-                <div class="pin-section">
-                    <div class="instruction-text">Yêu cầu học viên nhập mã:</div>
-                    <div class="room-pin-display" id="displayPin">----</div>
-                    <p style="font-size: 18px; color: #555;">Hoặc truy cập: <b style="color: #2980b9;">hocvienungdungai008-dotcom.github.io/myquiz/</b></p>
+            <!-- Nội dung câu hỏi -->
+            <div class="question-text-box" id="qText">
+                Đang tải câu hỏi...
+            </div>
+
+            <!-- 4 Ô Đáp án -->
+            <div class="options-grid">
+                <div class="opt-box opt-a" id="boxA">
+                    <span class="opt-icon">▲</span> <span id="txtA">Đáp án A</span>
+                </div>
+                <div class="opt-box opt-b" id="boxB">
+                    <span class="opt-icon">◆</span> <span id="txtB">Đáp án B</span>
+                </div>
+                <div class="opt-box opt-c" id="boxC">
+                    <span class="opt-icon">●</span> <span id="txtC">Đáp án C</span>
+                </div>
+                <div class="opt-box opt-d" id="boxD">
+                    <span class="opt-icon">■</span> <span id="txtD">Đáp án D</span>
                 </div>
             </div>
 
-            <p style="font-size: 20px; margin-bottom: 10px;">Học viên đang vào lớp: <span style="font-weight: bold; font-size: 32px; color:#2ecc71;" id="playerCountMain">0</span>/150</p>
-            
-            <!-- VÙNG HIỂN THỊ TÊN HỌC VIÊN TRÊN MÀN HÌNH CHÍNH -->
-            <div class="main-player-grid" id="mainPlayerList">
-                <!-- Tên học viên sẽ hiện ở đây dưới dạng các "chip" màu xanh -->
+            <!-- Bảng điều khiển của giảng viên -->
+            <div class="game-controls">
+                <button class="action-btn btn-reveal" id="btnReveal" style="width: auto; padding: 15px 30px;">HIỆN ĐÁP ÁN</button>
+                <button class="action-btn btn-next" id="btnNext" style="width: auto; padding: 15px 30px; display: none;">CÂU TIẾP THEO <i class="fas fa-arrow-right"></i></button>
             </div>
-
-            <button class="action-btn btn-start" id="btnStartGame">BẮT ĐẦU TRẮC NGHIỆM</button>
-        </div>
-        
-        <div id="gameView" style="display: none; font-size: 28px; font-weight: bold; color: #2c3e50;">
-            TRÒ CHƠI ĐÃ BẮT ĐẦU! HỌC VIÊN ĐANG LÀM BÀI TRÊN ĐIỆN THOẠI...
         </div>
     </div>
 
     <!-- LỚP PHỦ VÀ SIDEBAR MENU -->
     <div class="overlay" id="overlay"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Cài đặt & Quản lý</h2>
-            <button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div class="sidebar-section">
-            <h3><i class="fas fa-book"></i> Thư viện câu hỏi</h3>
-            <div class="library-list" id="librarySets">
-                <p style="font-size: 13px; color: #777; text-align: center; padding: 10px;">Đang tải thư viện...</p>
-            </div>
-        </div>
-
-        <div class="sidebar-section">
-            <h3><i class="fas fa-plus-square"></i> Thêm bộ câu hỏi mới</h3>
-            <input type="text" id="newSetName" class="txt-input" placeholder="Tên bộ câu hỏi (VD: An toàn điện)">
-            <input type="file" id="fileUpload" accept=".xlsx, .xls">
-            <button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-save"></i> Lưu vào Thư viện</button>
-            <p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 5px;"></p>
-        </div>
-
-        <div class="sidebar-section">
-            <h3>Danh sách học viên (<span id="playerCountSidebar">0</span>)</h3>
-            <ul class="player-list-container" id="playerList"></ul>
-        </div>
+        <!-- (Giữ nguyên cấu trúc HTML của Sidebar như cũ) -->
+        <div class="sidebar-header"><h2>Cài đặt & Quản lý</h2><button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button></div>
+        <div class="sidebar-section"><h3><i class="fas fa-book"></i> Thư viện câu hỏi</h3><div class="library-list" id="librarySets"><p style="font-size: 13px; color: #777; text-align: center; padding: 10px;">Đang tải thư viện...</p></div></div>
+        <div class="sidebar-section"><h3><i class="fas fa-plus-square"></i> Thêm bộ câu hỏi mới</h3><input type="text" id="newSetName" class="txt-input" placeholder="Tên bộ câu hỏi (VD: An toàn điện)"><input type="file" id="fileUpload" accept=".xlsx, .xls"><button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-save"></i> Lưu vào Thư viện</button><p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 5px;"></p></div>
+        <div class="sidebar-section"><h3>Danh sách học viên (<span id="playerCountSidebar">0</span>)</h3><ul class="player-list-container" id="playerList"></ul></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc } 
+        // Import thêm hàm getDoc để lấy chi tiết Bộ câu hỏi
+        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc, getDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -159,6 +203,12 @@
         let currentRoomPin = "";
         let playerUnsubscribe = null;
         let currentActiveSetId = ""; 
+        
+        // CÁC BIẾN QUẢN LÝ LUỒNG TRÒ CHƠI
+        let activeQuestionList = []; // Mảng chứa toàn bộ câu hỏi của bộ đề
+        let currentQuestionIndex = 0; // Vị trí câu hỏi hiện tại (bắt đầu từ 0)
+        let countdownTimer;
+        let timeLeft = 0;
 
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -169,104 +219,76 @@
 
         const elem = document.documentElement;
         document.getElementById('btnFullscreen').addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                if (elem.requestFullscreen) elem.requestFullscreen();
-                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
+            if (!document.fullscreenElement) { if (elem.requestFullscreen) elem.requestFullscreen(); else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); } 
+            else { if (document.exitFullscreen) document.exitFullscreen(); }
         });
 
-        // 1. TẢI DANH SÁCH THƯ VIỆN
+        // TẢI THƯ VIỆN & IMPORT (GIỮ NGUYÊN)
         async function loadLibrary() {
             const querySnapshot = await getDocs(collection(db, "QuestionSets"));
             const libUI = document.getElementById("librarySets");
             libUI.innerHTML = "";
-
-            if (querySnapshot.empty) {
-                libUI.innerHTML = "<p style='font-size: 13px; color: #777; text-align: center; padding: 10px;'>Chưa có bộ câu hỏi nào.</p>";
-                return;
-            }
-
+            if (querySnapshot.empty) { libUI.innerHTML = "<p style='font-size: 13px; color: #777; text-align: center; padding: 10px;'>Chưa có bộ câu hỏi.</p>"; return; }
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
-                const item = document.createElement("div");
-                item.className = "library-item";
-                
-                const info = document.createElement("div");
-                info.innerHTML = `<b>${data.name}</b><br><span style="color:#7f8c8d">${data.questions.length} câu</span>`;
-                
-                const btnOpen = document.createElement("button");
-                btnOpen.className = "btn-open-room";
-                btnOpen.innerText = "Mở phòng";
+                const item = document.createElement("div"); item.className = "library-item";
+                const info = document.createElement("div"); info.innerHTML = `<b>${data.name}</b><br><span style="color:#7f8c8d">${data.questions.length} câu</span>`;
+                const btnOpen = document.createElement("button"); btnOpen.className = "btn-open-room"; btnOpen.innerText = "Mở phòng";
                 btnOpen.addEventListener('click', () => initRoom(docSnap.id, data.name));
-
-                item.appendChild(info);
-                item.appendChild(btnOpen);
-                libUI.appendChild(item);
+                item.appendChild(info); item.appendChild(btnOpen); libUI.appendChild(item);
             });
         }
         loadLibrary();
 
-        // 2. IMPORT BỘ CÂU HỎI MỚI
         document.getElementById('btnImport').addEventListener('click', () => {
             const setNameInput = document.getElementById('newSetName').value.trim();
             const fileInput = document.getElementById('fileUpload');
             const statusText = document.getElementById('importStatus');
-            
-            if (!setNameInput) { alert("Vui lòng đặt tên cho Bộ câu hỏi!"); return; }
-            if (!fileInput.files[0]) { alert("Vui lòng chọn file Excel!"); return; }
+            if (!setNameInput) { alert("Nhập tên bộ câu hỏi!"); return; }
+            if (!fileInput.files[0]) { alert("Chọn file Excel!"); return; }
 
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
-                    statusText.style.color = "#d35400";
                     statusText.innerText = "Đang xử lý file...";
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    
                     const validQuestions = jsonData.filter(row => row['Question Text']);
-                    if(validQuestions.length === 0) { statusText.innerText = "Lỗi: File không hợp lệ."; return; }
-
+                    
                     let questionsArray = [];
                     for (let i = 0; i < validQuestions.length; i++) {
                         const row = validQuestions[i];
                         questionsArray.push({
-                            id: i + 1,
-                            text: row['Question Text'],
+                            id: i + 1, text: row['Question Text'],
                             options: [ row['Option 1'] || "", row['Option 2'] || "", row['Option 3'] || "", row['Option 4'] || "" ],
                             correct_answer: parseInt(row['Correct Answer']) || 1,
                             time_limit: parseInt(row['Time in seconds']) || 60
                         });
                     }
-
-                    statusText.innerText = "Đang lưu vào thư viện Firebase...";
-                    await addDoc(collection(db, "QuestionSets"), {
-                        name: setNameInput, created_at: Date.now(), questions: questionsArray
-                    });
-
-                    statusText.style.color = "green";
-                    statusText.innerText = `Đã lưu thành công bộ: ${setNameInput}`;
-                    document.getElementById('newSetName').value = "";
-                    document.getElementById('fileUpload').value = "";
+                    await addDoc(collection(db, "QuestionSets"), { name: setNameInput, created_at: Date.now(), questions: questionsArray });
+                    statusText.style.color = "green"; statusText.innerText = `Đã lưu thành công!`;
+                    document.getElementById('newSetName').value = ""; document.getElementById('fileUpload').value = "";
                     loadLibrary();
-
-                } catch (error) {
-                    console.error(error);
-                    statusText.style.color = "red";
-                    statusText.innerText = "Có lỗi xảy ra khi lưu file!";
-                }
+                } catch (error) { console.error(error); statusText.style.color = "red"; statusText.innerText = "Lỗi lưu file!"; }
             };
             reader.readAsArrayBuffer(fileInput.files[0]);
         });
 
-        // 3. KHỞI TẠO PHÒNG
+        // ==========================================
+        // KHỞI TẠO PHÒNG VÀ TẢI TRƯỚC BỘ CÂU HỎI VÀO BỘ NHỚ
+        // ==========================================
         async function initRoom(setId, setName) {
             currentRoomPin = Math.floor(1000 + Math.random() * 9000).toString();
             currentActiveSetId = setId;
             
+            // 1. Tải sẵn dữ liệu bộ câu hỏi từ DB về máy để lát chơi không bị lag
+            const setSnap = await getDoc(doc(db, "QuestionSets", setId));
+            if(setSnap.exists()) {
+                activeQuestionList = setSnap.data().questions;
+            }
+
             await setDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
                 status: "lobby", active_set_id: setId, current_question: 0, start_time: 0
             });
@@ -277,57 +299,139 @@
             document.getElementById('displayPin').innerText = currentRoomPin;
             document.getElementById('currentSetNameDisplay').innerText = setName; 
             
-            const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = ""; 
+            const qrContainer = document.getElementById("qrcode"); qrContainer.innerHTML = ""; 
             const studentUrl = `https://hocvienungdungai008-dotcom.github.io/myquiz/?pin=${currentRoomPin}`;
-            new QRCode(qrContainer, {
-                text: studentUrl, width: 200, height: 200, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
-            });
+            new QRCode(qrContainer, { text: studentUrl, width: 220, height: 220, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
 
-            closeMenu();
-            listenToPlayers(currentRoomPin);
+            closeMenu(); listenToPlayers(currentRoomPin);
         }
 
-        // 4. LẮNG NGHE & HIỆN TÊN HỌC VIÊN LÊN MÀN HÌNH
         function listenToPlayers(pin) {
             if (playerUnsubscribe) { playerUnsubscribe(); }
             const q = query(collection(db, "Players"), where("room_pin", "==", pin));
-
             playerUnsubscribe = onSnapshot(q, (snapshot) => {
                 let count = snapshot.size;
-                document.getElementById('playerCountMain').innerText = count;
-                document.getElementById('playerCountSidebar').innerText = count;
-                
-                const listUI = document.getElementById('playerList'); // Cột sidebar
-                const mainGridUI = document.getElementById('mainPlayerList'); // Màn hình chính
-                
-                listUI.innerHTML = ""; 
-                mainGridUI.innerHTML = ""; 
-                
+                document.getElementById('playerCountMain').innerText = count; document.getElementById('playerCountSidebar').innerText = count;
+                const listUI = document.getElementById('playerList'); const mainGridUI = document.getElementById('mainPlayerList'); 
+                listUI.innerHTML = ""; mainGridUI.innerHTML = ""; 
                 snapshot.forEach((doc) => {
                     const player = doc.data();
-                    
-                    // Add vào Menu ẩn
-                    const li = document.createElement('li');
-                    li.innerText = player.name; 
-                    listUI.appendChild(li);
-
-                    // Add vào Màn hình chính
-                    const chip = document.createElement('div');
-                    chip.className = 'player-chip';
-                    chip.innerText = player.name;
-                    mainGridUI.appendChild(chip);
+                    const li = document.createElement('li'); li.innerText = player.name; listUI.appendChild(li);
+                    const chip = document.createElement('div'); chip.className = 'player-chip'; chip.innerText = player.name; mainGridUI.appendChild(chip);
                 });
+                mainGridUI.scrollTop = mainGridUI.scrollHeight;
             });
         }
 
-        // 5. BẮT ĐẦU GAME
-        document.getElementById('btnStartGame').addEventListener('click', async () => {
-            await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                status: "playing", current_question: 1, start_time: Date.now()
+        // ==========================================
+        // LOGIC HIỂN THỊ CÂU HỎI LÊN MÀN HÌNH
+        // ==========================================
+        function renderQuestion(index) {
+            const q = activeQuestionList[index];
+            
+            // Xóa các hiệu ứng làm mờ/sáng của câu hỏi trước
+            document.querySelectorAll('.opt-box').forEach(box => {
+                box.classList.remove('opt-dimmed', 'opt-correct');
             });
+            
+            // Hiển thị nội dung
+            document.getElementById('qText').innerText = `Câu ${index + 1}: ${q.text}`;
+            document.getElementById('txtA').innerText = q.options[0];
+            document.getElementById('txtB').innerText = q.options[1];
+            document.getElementById('txtC').innerText = q.options[2];
+            document.getElementById('txtD').innerText = q.options[3];
+
+            // Ẩn/hiện các ô đáp án nếu câu hỏi đó không đủ 4 lựa chọn (VD: câu True/False)
+            document.getElementById('boxA').style.visibility = q.options[0] ? 'visible' : 'hidden';
+            document.getElementById('boxB').style.visibility = q.options[1] ? 'visible' : 'hidden';
+            document.getElementById('boxC').style.visibility = q.options[2] ? 'visible' : 'hidden';
+            document.getElementById('boxD').style.visibility = q.options[3] ? 'visible' : 'hidden';
+
+            // Thiết lập nút điều khiển
+            document.getElementById('btnReveal').style.display = 'block';
+            document.getElementById('btnNext').style.display = 'none';
+
+            // Chạy đồng hồ
+            clearInterval(countdownTimer);
+            timeLeft = q.time_limit || 60;
+            document.getElementById('timerDisplay').innerText = timeLeft;
+            
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timerDisplay').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                }
+            }, 1000);
+        }
+
+        // BẤM: BẮT ĐẦU TRẮC NGHIỆM (BẮT ĐẦU CÂU 1)
+        document.getElementById('btnStartGame').addEventListener('click', async () => {
+            currentQuestionIndex = 0;
+            
+            await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
+                status: "playing", 
+                current_question: currentQuestionIndex + 1, // DB lưu số câu từ 1
+                start_time: Date.now()
+            });
+            
             document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('gameView').style.display = 'block';
+            document.getElementById('gameView').style.display = 'flex';
+            
+            renderQuestion(currentQuestionIndex);
+        });
+
+        // BẤM: HIỆN ĐÁP ÁN ĐÚNG
+        document.getElementById('btnReveal').addEventListener('click', async () => {
+            clearInterval(countdownTimer); // Dừng đồng hồ
+            const correctAns = activeQuestionList[currentQuestionIndex].correct_answer; // Số 1,2,3,4
+            
+            // Gắn class css để bôi đen đáp án sai, bôi sáng đáp án đúng
+            const boxes = [
+                document.getElementById('boxA'), document.getElementById('boxB'),
+                document.getElementById('boxC'), document.getElementById('boxD')
+            ];
+            
+            boxes.forEach((box, i) => {
+                if (i + 1 === correctAns) {
+                    box.classList.add('opt-correct');
+                } else {
+                    box.classList.add('opt-dimmed');
+                }
+            });
+
+            // Cập nhật trạng thái trên Firebase để báo cho Học viên biết đã chốt đáp án
+            await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
+                status: "reveal"
+            });
+
+            document.getElementById('btnReveal').style.display = 'none';
+            document.getElementById('btnNext').style.display = 'block';
+        });
+
+        // BẤM: CÂU TIẾP THEO
+        document.getElementById('btnNext').addEventListener('click', async () => {
+            currentQuestionIndex++;
+            
+            // Kiểm tra xem đã hết câu hỏi chưa
+            if (currentQuestionIndex < activeQuestionList.length) {
+                await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
+                    status: "playing",
+                    current_question: currentQuestionIndex + 1,
+                    start_time: Date.now()
+                });
+                renderQuestion(currentQuestionIndex);
+            } else {
+                // Kết thúc game
+                document.getElementById('qText').innerText = "ĐÃ HOÀN THÀNH BÀI KIỂM TRA!";
+                document.querySelector('.options-grid').style.display = 'none';
+                document.getElementById('btnNext').style.display = 'none';
+                document.getElementById('timerDisplay').style.display = 'none';
+                
+                await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
+                    status: "finished"
+                });
+            }
         });
     </script>
 </body>
