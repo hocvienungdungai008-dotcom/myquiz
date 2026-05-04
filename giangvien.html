@@ -4,14 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giảng Viên - Điều khiển Quiz</title>
+    <!-- Nhúng thư viện SheetJS để đọc file Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
-        .control-panel { background: #f0f0f0; padding: 15px; border-radius: 8px; }
+        .control-panel { background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .import-panel { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        button { padding: 8px 12px; margin-right: 10px; cursor: pointer; }
+        input[type="file"] { margin-right: 10px; }
     </style>
 </head>
 <body>
     <h1>Bảng Điều Khiển Giảng Viên</h1>
+
+    <!-- KHU VỰC NHẬP CÂU HỎI TỪ EXCEL -->
+    <div class="import-panel">
+        <h3>1. Nhập câu hỏi từ file Quizizz (Excel)</h3>
+        <input type="file" id="fileUpload" accept=".xlsx, .xls">
+        <button id="btnImport">Import lên Hệ thống</button>
+        <p id="importStatus" style="color: green; font-weight: bold;"></p>
+    </div>
+
+    <!-- KHU VỰC ĐIỀU KHIỂN GAME -->
     <div class="control-panel">
+        <h3>2. Điều khiển lớp học</h3>
         <button id="btnInitRoom">Khởi tạo phòng học (Reset data)</button>
         <button id="btnStartGame">Bắt đầu câu số 1</button>
         <button id="btnShowAnswer">Hiện đáp án & Tính điểm</button>
@@ -22,7 +38,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, getDocs } 
+        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // Cấu hình Firebase
@@ -39,7 +55,75 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. Khởi tạo trạng thái phòng học trên Firebase
+        // ==========================================
+        // TÍNH NĂNG IMPORT FILE EXCEL QUIZIZZ
+        // ==========================================
+        document.getElementById('btnImport').addEventListener('click', () => {
+            const fileInput = document.getElementById('fileUpload');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert("Vui lòng chọn file Excel trước khi import!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    // Đọc file thành định dạng array buffer
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // Lấy dữ liệu từ Sheet đầu tiên
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // Chuyển đổi Sheet thành mảng JSON
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    let questionCount = 0;
+                    document.getElementById('importStatus').innerText = "Đang xử lý đẩy dữ liệu lên Firebase...";
+
+                    // Lặp qua từng dòng dữ liệu và đẩy lên Firestore
+                    for (let i = 0; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        
+                        // Bỏ qua nếu dòng không có câu hỏi
+                        if (!row['Question Text']) continue;
+
+                        questionCount++;
+                        
+                        // Đẩy vào Collection 'Questions' với ID lần lượt là q1, q2, q3...
+                        await setDoc(doc(db, "Questions", "q" + questionCount), {
+                            id: questionCount,
+                            text: row['Question Text'],
+                            options: [
+                                row['Option 1'] || "",
+                                row['Option 2'] || "",
+                                row['Option 3'] || "",
+                                row['Option 4'] || ""
+                            ],
+                            // Lưu số nguyên (1, 2, 3, 4) cho đáp án đúng
+                            correct_answer: parseInt(row['Correct Answer']) || 1,
+                            time_limit: parseInt(row['Time in seconds']) || 60
+                        });
+                    }
+
+                    document.getElementById('importStatus').innerText = `Thành công! Đã tải lên ${questionCount} câu hỏi.`;
+                    alert(`Đã tải lên ${questionCount} câu hỏi thành công!`);
+
+                } catch (error) {
+                    console.error("Lỗi khi đọc file: ", error);
+                    alert("Có lỗi xảy ra khi xử lý file Excel. Vui lòng kiểm tra lại định dạng.");
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        });
+
+        // ==========================================
+        // ĐIỀU KHIỂN PHÒNG HỌC
+        // ==========================================
         document.getElementById('btnInitRoom').addEventListener('click', async () => {
             await setDoc(doc(db, "GameSession", "Room_01"), {
                 status: "lobby",
@@ -50,12 +134,11 @@
             alert("Phòng học đã mở. Cho học viên quét QR!");
         });
 
-        // 2. Lắng nghe danh sách học viên theo thời gian thực (Real-time update)
         const unsubPlayers = onSnapshot(collection(db, "Players"), (snapshot) => {
             const listUI = document.getElementById('playerList');
             document.getElementById('playerCount').innerText = snapshot.size;
             
-            listUI.innerHTML = ""; // Xóa list cũ
+            listUI.innerHTML = ""; 
             snapshot.forEach((doc) => {
                 const player = doc.data();
                 const li = document.createElement('li');
@@ -64,12 +147,11 @@
             });
         });
 
-        // 3. Giảng viên bấm Bắt đầu câu hỏi
         document.getElementById('btnStartGame').addEventListener('click', async () => {
             await updateDoc(doc(db, "GameSession", "Room_01"), {
                 status: "playing",
                 current_question: 1,
-                start_time: Date.now() // Lấy giờ chuẩn làm mốc tính điểm
+                start_time: Date.now()
             });
         });
     </script>
