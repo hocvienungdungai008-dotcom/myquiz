@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giảng Viên - Điều khiển Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .control-panel { background: #f0f0f0; padding: 15px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Bảng Điều Khiển Giảng Viên</h1>
+    <div class="control-panel">
+        <button id="btnInitRoom">Khởi tạo phòng học (Reset data)</button>
+        <button id="btnStartGame">Bắt đầu câu số 1</button>
+        <button id="btnShowAnswer">Hiện đáp án & Tính điểm</button>
+    </div>
+
+    <h3>Danh sách học viên đã vào lớp (<span id="playerCount">0</span>/150)</h3>
+    <ul id="playerList"></ul>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, getDocs } 
+        from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Cấu hình Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0",
+            authDomain: "myquiz-e696f.firebaseapp.com",
+            projectId: "myquiz-e696f",
+            storageBucket: "myquiz-e696f.firebasestorage.app",
+            messagingSenderId: "609107578436",
+            appId: "1:609107578436:web:0a042fb99e00c2212f3611",
+            measurementId: "G-75BKW41Y6B"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. Khởi tạo trạng thái phòng học trên Firebase
+        document.getElementById('btnInitRoom').addEventListener('click', async () => {
+            await setDoc(doc(db, "GameSession", "Room_01"), {
+                status: "lobby",
+                current_question: 0,
+                correct_answer: "",
+                start_time: 0
+            });
+            alert("Phòng học đã mở. Cho học viên quét QR!");
+        });
+
+        // 2. Lắng nghe danh sách học viên theo thời gian thực (Real-time update)
+        const unsubPlayers = onSnapshot(collection(db, "Players"), (snapshot) => {
+            const listUI = document.getElementById('playerList');
+            document.getElementById('playerCount').innerText = snapshot.size;
+            
+            listUI.innerHTML = ""; // Xóa list cũ
+            snapshot.forEach((doc) => {
+                const player = doc.data();
+                const li = document.createElement('li');
+                li.innerText = player.name + " - Điểm: " + player.score;
+                listUI.appendChild(li);
+            });
+        });
+
+        // 3. Giảng viên bấm Bắt đầu câu hỏi
+        document.getElementById('btnStartGame').addEventListener('click', async () => {
+            await updateDoc(doc(db, "GameSession", "Room_01"), {
+                status: "playing",
+                current_question: 1,
+                start_time: Date.now() // Lấy giờ chuẩn làm mốc tính điểm
+            });
+        });
+    </script>
+</body>
+</html>
