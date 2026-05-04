@@ -14,11 +14,10 @@
 
         .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #2c3e50; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .icon-btn { background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 10px; transition: color 0.3s; }
-        .icon-btn:hover { color: #3498db; }
         
         .presentation-area { margin-top: 60px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 60px); width: 100%;}
         
-        /* GIAO DIỆN LOBBY (GIỮ NGUYÊN) */
+        /* LOBBY LÀM LẠI CHO ĐẸP */
         #lobbyView { width: 100%; height: 100%; max-width: 1400px; margin: 0 auto; }
         .lobby-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; height: 100%; padding-top: 20px; }
         .lobby-left { display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -36,50 +35,34 @@
         .main-player-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px; }
         .player-chip { background: #e8f4fd; color: #2980b9; padding: 12px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; border-left: 4px solid #3498db; }
 
-        /* ========================================== */
-        /* CSS MỚI: GIAO DIỆN CHƠI GAME (TRÌNH CHIẾU CÂU HỎI) */
-        /* ========================================== */
+        /* GIAO DIỆN CHƠI GAME & ĐÁP ÁN */
         #gameView { width: 100%; max-width: 1400px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        .timer-circle { 
-            width: 80px; height: 80px; border-radius: 50%; background: #9b59b6; color: white; 
-            display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold;
-            margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .timer-container { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .timer-circle { width: 80px; height: 80px; border-radius: 50%; background: #9b59b6; color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .btn-skip { background: #e74c3c; padding: 12px 20px; font-size: 18px; }
         
-        .question-text-box {
-            background: white; width: 100%; padding: 40px; border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
-            font-size: 36px; font-weight: bold; color: #2c3e50; line-height: 1.4;
-        }
+        .question-text-box { background: white; width: 100%; padding: 40px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; font-size: 36px; font-weight: bold; color: #2c3e50; line-height: 1.4; }
 
-        .options-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
-        }
-
-        .opt-box {
-            display: flex; align-items: center; padding: 25px; border-radius: 8px; color: white;
-            font-size: 28px; font-weight: bold; min-height: 120px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-            transition: opacity 0.3s ease;
-        }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .opt-box { display: flex; align-items: center; padding: 25px; border-radius: 8px; color: white; font-size: 28px; font-weight: bold; min-height: 120px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); transition: all 0.3s ease; position: relative; }
         
-        /* 4 Màu chuẩn chỉnh giống bộ nút trên điện thoại */
-        .opt-a { background-color: #e21b3c; } /* Đỏ */
-        .opt-b { background-color: #1368ce; } /* Xanh dương */
-        .opt-c { background-color: #d89e00; } /* Vàng */
-        .opt-d { background-color: #26890c; } /* Xanh lá */
-        
+        .opt-a { background-color: #e21b3c; } 
+        .opt-b { background-color: #1368ce; } 
+        .opt-c { background-color: #d89e00; } 
+        .opt-d { background-color: #26890c; } 
         .opt-icon { font-size: 36px; margin-right: 20px; opacity: 0.8; }
         
-        /* Trạng thái khi làm mờ đáp án sai */
-        .opt-dimmed { opacity: 0.2; }
-        .opt-correct { border: 4px solid #fff; transform: scale(1.02); }
+        /* CSS cho trạng thái đáp án */
+        .opt-dimmed { opacity: 0.3; filter: grayscale(50%); }
+        .opt-correct { transform: scale(1.02); box-shadow: 0 0 15px rgba(46, 204, 113, 0.8); border: 3px solid #2ecc71; }
+        .check-icon { position: absolute; right: 20px; font-size: 45px; color: #2ecc71; background: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
         .game-controls { margin-top: 30px; display: flex; gap: 20px; }
         .btn-reveal { background: #f39c12; }
         .btn-next { background: #3498db; }
 
-        /* SIDEBAR (GIỮ NGUYÊN) */
+        /* SIDEBAR MENU */
         .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.2); z-index: 1001; transition: left 0.3s ease; padding: 20px; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
@@ -129,43 +112,32 @@
                     <button class="action-btn btn-start" id="btnStartGame">BẮT ĐẦU TRẮC NGHIỆM</button>
                 </div>
                 <div class="lobby-right">
-                    <div class="lobby-right-header">
-                        Học viên đã vào: <br><span id="playerCountMain">0</span> / 150
-                    </div>
+                    <div class="lobby-right-header">Học viên đã vào: <br><span id="playerCountMain">0</span> / 150</div>
                     <div class="main-player-list" id="mainPlayerList"></div>
                 </div>
             </div>
         </div>
         
-        <!-- ========================================== -->
-        <!-- GIAO DIỆN CÂU HỎI VÀ ĐÁP ÁN (MỚI) -->
-        <!-- ========================================== -->
+        <!-- GIAO DIỆN CÂU HỎI -->
         <div id="gameView" style="display: none;">
-            <!-- Đồng hồ đếm ngược -->
-            <div class="timer-circle" id="timerDisplay">60</div>
             
-            <!-- Nội dung câu hỏi -->
-            <div class="question-text-box" id="qText">
-                Đang tải câu hỏi...
+            <div class="timer-container">
+                <div class="timer-circle" id="timerDisplay">60</div>
+                <!-- Nút chốt câu hỏi sớm -->
+                <button class="action-btn btn-skip" id="btnSkipTimer" title="Dừng thời gian và Chốt kết quả">
+                    <i class="fas fa-forward"></i> Đóng câu hỏi
+                </button>
             </div>
+            
+            <div class="question-text-box" id="qText">Đang tải câu hỏi...</div>
 
-            <!-- 4 Ô Đáp án -->
             <div class="options-grid">
-                <div class="opt-box opt-a" id="boxA">
-                    <span class="opt-icon">▲</span> <span id="txtA">Đáp án A</span>
-                </div>
-                <div class="opt-box opt-b" id="boxB">
-                    <span class="opt-icon">◆</span> <span id="txtB">Đáp án B</span>
-                </div>
-                <div class="opt-box opt-c" id="boxC">
-                    <span class="opt-icon">●</span> <span id="txtC">Đáp án C</span>
-                </div>
-                <div class="opt-box opt-d" id="boxD">
-                    <span class="opt-icon">■</span> <span id="txtD">Đáp án D</span>
-                </div>
+                <div class="opt-box opt-a" id="boxA"><span class="opt-icon">▲</span> <span id="txtA">Đáp án A</span></div>
+                <div class="opt-box opt-b" id="boxB"><span class="opt-icon">◆</span> <span id="txtB">Đáp án B</span></div>
+                <div class="opt-box opt-c" id="boxC"><span class="opt-icon">●</span> <span id="txtC">Đáp án C</span></div>
+                <div class="opt-box opt-d" id="boxD"><span class="opt-icon">■</span> <span id="txtD">Đáp án D</span></div>
             </div>
 
-            <!-- Bảng điều khiển của giảng viên -->
             <div class="game-controls">
                 <button class="action-btn btn-reveal" id="btnReveal" style="width: auto; padding: 15px 30px;">HIỆN ĐÁP ÁN</button>
                 <button class="action-btn btn-next" id="btnNext" style="width: auto; padding: 15px 30px; display: none;">CÂU TIẾP THEO <i class="fas fa-arrow-right"></i></button>
@@ -173,10 +145,9 @@
         </div>
     </div>
 
-    <!-- LỚP PHỦ VÀ SIDEBAR MENU -->
+    <!-- MENU ẨN (Giữ nguyên) -->
     <div class="overlay" id="overlay"></div>
     <div class="sidebar" id="sidebar">
-        <!-- (Giữ nguyên cấu trúc HTML của Sidebar như cũ) -->
         <div class="sidebar-header"><h2>Cài đặt & Quản lý</h2><button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button></div>
         <div class="sidebar-section"><h3><i class="fas fa-book"></i> Thư viện câu hỏi</h3><div class="library-list" id="librarySets"><p style="font-size: 13px; color: #777; text-align: center; padding: 10px;">Đang tải thư viện...</p></div></div>
         <div class="sidebar-section"><h3><i class="fas fa-plus-square"></i> Thêm bộ câu hỏi mới</h3><input type="text" id="newSetName" class="txt-input" placeholder="Tên bộ câu hỏi (VD: An toàn điện)"><input type="file" id="fileUpload" accept=".xlsx, .xls"><button class="sidebar-btn btn-import" id="btnImport"><i class="fas fa-save"></i> Lưu vào Thư viện</button><p id="importStatus" style="color: #d35400; font-weight: bold; font-size: 14px; margin-top: 5px;"></p></div>
@@ -185,37 +156,23 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        // Import thêm hàm getDoc để lấy chi tiết Bộ câu hỏi
         import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc, getDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0",
-            authDomain: "myquiz-e696f.firebaseapp.com",
-            projectId: "myquiz-e696f",
-            storageBucket: "myquiz-e696f.firebasestorage.app",
-            messagingSenderId: "609107578436",
-            appId: "1:609107578436:web:0a042fb99e00c2212f3611"
+            apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0", authDomain: "myquiz-e696f.firebaseapp.com", projectId: "myquiz-e696f",
+            storageBucket: "myquiz-e696f.firebasestorage.app", messagingSenderId: "609107578436", appId: "1:609107578436:web:0a042fb99e00c2212f3611"
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let currentRoomPin = "";
-        let playerUnsubscribe = null;
-        let currentActiveSetId = ""; 
-        
-        // CÁC BIẾN QUẢN LÝ LUỒNG TRÒ CHƠI
-        let activeQuestionList = []; // Mảng chứa toàn bộ câu hỏi của bộ đề
-        let currentQuestionIndex = 0; // Vị trí câu hỏi hiện tại (bắt đầu từ 0)
-        let countdownTimer;
-        let timeLeft = 0;
+        let currentRoomPin = ""; let playerUnsubscribe = null; let currentActiveSetId = ""; 
+        let activeQuestionList = []; let currentQuestionIndex = 0; let countdownTimer; let timeLeft = 0;
 
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+        const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('overlay');
         document.getElementById('btnToggleMenu').addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('active'); });
         const closeMenu = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
-        document.getElementById('btnCloseMenu').addEventListener('click', closeMenu);
-        overlay.addEventListener('click', closeMenu);
+        document.getElementById('btnCloseMenu').addEventListener('click', closeMenu); overlay.addEventListener('click', closeMenu);
 
         const elem = document.documentElement;
         document.getElementById('btnFullscreen').addEventListener('click', () => {
@@ -223,11 +180,9 @@
             else { if (document.exitFullscreen) document.exitFullscreen(); }
         });
 
-        // TẢI THƯ VIỆN & IMPORT (GIỮ NGUYÊN)
         async function loadLibrary() {
             const querySnapshot = await getDocs(collection(db, "QuestionSets"));
-            const libUI = document.getElementById("librarySets");
-            libUI.innerHTML = "";
+            const libUI = document.getElementById("librarySets"); libUI.innerHTML = "";
             if (querySnapshot.empty) { libUI.innerHTML = "<p style='font-size: 13px; color: #777; text-align: center; padding: 10px;'>Chưa có bộ câu hỏi.</p>"; return; }
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
@@ -241,196 +196,138 @@
         loadLibrary();
 
         document.getElementById('btnImport').addEventListener('click', () => {
-            const setNameInput = document.getElementById('newSetName').value.trim();
-            const fileInput = document.getElementById('fileUpload');
+            const setNameInput = document.getElementById('newSetName').value.trim(); const fileInput = document.getElementById('fileUpload');
             const statusText = document.getElementById('importStatus');
-            if (!setNameInput) { alert("Nhập tên bộ câu hỏi!"); return; }
-            if (!fileInput.files[0]) { alert("Chọn file Excel!"); return; }
-
+            if (!setNameInput) { alert("Nhập tên bộ câu hỏi!"); return; } if (!fileInput.files[0]) { alert("Chọn file Excel!"); return; }
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
                     statusText.innerText = "Đang xử lý file...";
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    const validQuestions = jsonData.filter(row => row['Question Text']);
-                    
+                    const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+                    const validQuestions = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]).filter(row => row['Question Text']);
                     let questionsArray = [];
                     for (let i = 0; i < validQuestions.length; i++) {
                         const row = validQuestions[i];
-                        questionsArray.push({
-                            id: i + 1, text: row['Question Text'],
-                            options: [ row['Option 1'] || "", row['Option 2'] || "", row['Option 3'] || "", row['Option 4'] || "" ],
-                            correct_answer: parseInt(row['Correct Answer']) || 1,
-                            time_limit: parseInt(row['Time in seconds']) || 60
-                        });
+                        questionsArray.push({ id: i + 1, text: row['Question Text'], options: [ row['Option 1'] || "", row['Option 2'] || "", row['Option 3'] || "", row['Option 4'] || "" ], correct_answer: parseInt(row['Correct Answer']) || 1, time_limit: parseInt(row['Time in seconds']) || 60 });
                     }
                     await addDoc(collection(db, "QuestionSets"), { name: setNameInput, created_at: Date.now(), questions: questionsArray });
                     statusText.style.color = "green"; statusText.innerText = `Đã lưu thành công!`;
-                    document.getElementById('newSetName').value = ""; document.getElementById('fileUpload').value = "";
-                    loadLibrary();
+                    document.getElementById('newSetName').value = ""; document.getElementById('fileUpload').value = ""; loadLibrary();
                 } catch (error) { console.error(error); statusText.style.color = "red"; statusText.innerText = "Lỗi lưu file!"; }
             };
             reader.readAsArrayBuffer(fileInput.files[0]);
         });
 
-        // ==========================================
-        // KHỞI TẠO PHÒNG VÀ TẢI TRƯỚC BỘ CÂU HỎI VÀO BỘ NHỚ
-        // ==========================================
         async function initRoom(setId, setName) {
             currentRoomPin = Math.floor(1000 + Math.random() * 9000).toString();
-            currentActiveSetId = setId;
-            
-            // 1. Tải sẵn dữ liệu bộ câu hỏi từ DB về máy để lát chơi không bị lag
             const setSnap = await getDoc(doc(db, "QuestionSets", setId));
-            if(setSnap.exists()) {
-                activeQuestionList = setSnap.data().questions;
-            }
+            if(setSnap.exists()) activeQuestionList = setSnap.data().questions;
 
-            await setDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                status: "lobby", active_set_id: setId, current_question: 0, start_time: 0
-            });
+            await setDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "lobby", active_set_id: setId, current_question: 0, start_time: 0 });
             
-            document.getElementById('welcomeMessage').style.display = 'none';
-            document.getElementById('gameView').style.display = 'none';
-            document.getElementById('lobbyView').style.display = 'block';
-            document.getElementById('displayPin').innerText = currentRoomPin;
+            document.getElementById('welcomeMessage').style.display = 'none'; document.getElementById('gameView').style.display = 'none';
+            document.getElementById('lobbyView').style.display = 'block'; document.getElementById('displayPin').innerText = currentRoomPin;
             document.getElementById('currentSetNameDisplay').innerText = setName; 
             
             const qrContainer = document.getElementById("qrcode"); qrContainer.innerHTML = ""; 
-            const studentUrl = `https://hocvienungdungai008-dotcom.github.io/myquiz/?pin=${currentRoomPin}`;
-            new QRCode(qrContainer, { text: studentUrl, width: 220, height: 220, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
-
+            new QRCode(qrContainer, { text: `https://hocvienungdungai008-dotcom.github.io/myquiz/?pin=${currentRoomPin}`, width: 220, height: 220, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
             closeMenu(); listenToPlayers(currentRoomPin);
         }
 
         function listenToPlayers(pin) {
-            if (playerUnsubscribe) { playerUnsubscribe(); }
-            const q = query(collection(db, "Players"), where("room_pin", "==", pin));
-            playerUnsubscribe = onSnapshot(q, (snapshot) => {
-                let count = snapshot.size;
-                document.getElementById('playerCountMain').innerText = count; document.getElementById('playerCountSidebar').innerText = count;
+            if (playerUnsubscribe) playerUnsubscribe();
+            playerUnsubscribe = onSnapshot(query(collection(db, "Players"), where("room_pin", "==", pin)), (snapshot) => {
+                document.getElementById('playerCountMain').innerText = snapshot.size; document.getElementById('playerCountSidebar').innerText = snapshot.size;
                 const listUI = document.getElementById('playerList'); const mainGridUI = document.getElementById('mainPlayerList'); 
                 listUI.innerHTML = ""; mainGridUI.innerHTML = ""; 
                 snapshot.forEach((doc) => {
-                    const player = doc.data();
-                    const li = document.createElement('li'); li.innerText = player.name; listUI.appendChild(li);
-                    const chip = document.createElement('div'); chip.className = 'player-chip'; chip.innerText = player.name; mainGridUI.appendChild(chip);
+                    const li = document.createElement('li'); li.innerText = doc.data().name; listUI.appendChild(li);
+                    const chip = document.createElement('div'); chip.className = 'player-chip'; chip.innerText = doc.data().name; mainGridUI.appendChild(chip);
                 });
                 mainGridUI.scrollTop = mainGridUI.scrollHeight;
             });
         }
 
-        // ==========================================
-        // LOGIC HIỂN THỊ CÂU HỎI LÊN MÀN HÌNH
-        // ==========================================
         function renderQuestion(index) {
             const q = activeQuestionList[index];
             
-            // Xóa các hiệu ứng làm mờ/sáng của câu hỏi trước
+            // Xóa hiệu ứng của câu cũ
             document.querySelectorAll('.opt-box').forEach(box => {
                 box.classList.remove('opt-dimmed', 'opt-correct');
             });
+            document.querySelectorAll('.check-icon').forEach(icon => icon.remove());
             
-            // Hiển thị nội dung
             document.getElementById('qText').innerText = `Câu ${index + 1}: ${q.text}`;
-            document.getElementById('txtA').innerText = q.options[0];
-            document.getElementById('txtB').innerText = q.options[1];
-            document.getElementById('txtC').innerText = q.options[2];
-            document.getElementById('txtD').innerText = q.options[3];
+            document.getElementById('txtA').innerText = q.options[0]; document.getElementById('txtB').innerText = q.options[1];
+            document.getElementById('txtC').innerText = q.options[2]; document.getElementById('txtD').innerText = q.options[3];
 
-            // Ẩn/hiện các ô đáp án nếu câu hỏi đó không đủ 4 lựa chọn (VD: câu True/False)
-            document.getElementById('boxA').style.visibility = q.options[0] ? 'visible' : 'hidden';
-            document.getElementById('boxB').style.visibility = q.options[1] ? 'visible' : 'hidden';
-            document.getElementById('boxC').style.visibility = q.options[2] ? 'visible' : 'hidden';
-            document.getElementById('boxD').style.visibility = q.options[3] ? 'visible' : 'hidden';
+            document.getElementById('boxA').style.display = q.options[0] ? 'flex' : 'none';
+            document.getElementById('boxB').style.display = q.options[1] ? 'flex' : 'none';
+            document.getElementById('boxC').style.display = q.options[2] ? 'flex' : 'none';
+            document.getElementById('boxD').style.display = q.options[3] ? 'flex' : 'none';
 
-            // Thiết lập nút điều khiển
             document.getElementById('btnReveal').style.display = 'block';
+            document.getElementById('btnSkipTimer').style.display = 'block';
             document.getElementById('btnNext').style.display = 'none';
 
-            // Chạy đồng hồ
             clearInterval(countdownTimer);
             timeLeft = q.time_limit || 60;
             document.getElementById('timerDisplay').innerText = timeLeft;
             
             countdownTimer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timerDisplay').innerText = timeLeft;
-                if(timeLeft <= 0) {
-                    clearInterval(countdownTimer);
-                }
+                timeLeft--; document.getElementById('timerDisplay').innerText = timeLeft;
+                if(timeLeft <= 0) { clearInterval(countdownTimer); }
             }, 1000);
         }
 
-        // BẤM: BẮT ĐẦU TRẮC NGHIỆM (BẮT ĐẦU CÂU 1)
         document.getElementById('btnStartGame').addEventListener('click', async () => {
             currentQuestionIndex = 0;
-            
-            await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                status: "playing", 
-                current_question: currentQuestionIndex + 1, // DB lưu số câu từ 1
-                start_time: Date.now()
-            });
-            
-            document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('gameView').style.display = 'flex';
-            
+            await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "playing", current_question: currentQuestionIndex + 1 });
+            document.getElementById('lobbyView').style.display = 'none'; document.getElementById('gameView').style.display = 'flex';
             renderQuestion(currentQuestionIndex);
         });
 
-        // BẤM: HIỆN ĐÁP ÁN ĐÚNG
-        document.getElementById('btnReveal').addEventListener('click', async () => {
-            clearInterval(countdownTimer); // Dừng đồng hồ
-            const correctAns = activeQuestionList[currentQuestionIndex].correct_answer; // Số 1,2,3,4
+        // XỬ LÝ KHI BẤM "ĐÓNG SỚM" HOẶC "HIỆN ĐÁP ÁN"
+        const revealAnswerLogic = async () => {
+            clearInterval(countdownTimer);
+            const correctAns = activeQuestionList[currentQuestionIndex].correct_answer; 
             
-            // Gắn class css để bôi đen đáp án sai, bôi sáng đáp án đúng
-            const boxes = [
-                document.getElementById('boxA'), document.getElementById('boxB'),
-                document.getElementById('boxC'), document.getElementById('boxD')
-            ];
-            
+            const boxes = [document.getElementById('boxA'), document.getElementById('boxB'), document.getElementById('boxC'), document.getElementById('boxD')];
             boxes.forEach((box, i) => {
                 if (i + 1 === correctAns) {
                     box.classList.add('opt-correct');
+                    // Gắn Tick xanh
+                    box.innerHTML += '<div class="check-icon"><i class="fas fa-check"></i></div>';
                 } else {
                     box.classList.add('opt-dimmed');
                 }
             });
 
-            // Cập nhật trạng thái trên Firebase để báo cho Học viên biết đã chốt đáp án
+            // GỬI KẾT QUẢ CHO HỌC VIÊN QUA FIREBASE
             await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                status: "reveal"
+                status: "reveal",
+                correct_answer: correctAns
             });
 
             document.getElementById('btnReveal').style.display = 'none';
+            document.getElementById('btnSkipTimer').style.display = 'none';
             document.getElementById('btnNext').style.display = 'block';
-        });
+        };
 
-        // BẤM: CÂU TIẾP THEO
+        document.getElementById('btnReveal').addEventListener('click', revealAnswerLogic);
+        document.getElementById('btnSkipTimer').addEventListener('click', revealAnswerLogic);
+
         document.getElementById('btnNext').addEventListener('click', async () => {
             currentQuestionIndex++;
-            
-            // Kiểm tra xem đã hết câu hỏi chưa
             if (currentQuestionIndex < activeQuestionList.length) {
-                await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                    status: "playing",
-                    current_question: currentQuestionIndex + 1,
-                    start_time: Date.now()
-                });
+                await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "playing", current_question: currentQuestionIndex + 1 });
                 renderQuestion(currentQuestionIndex);
             } else {
-                // Kết thúc game
                 document.getElementById('qText').innerText = "ĐÃ HOÀN THÀNH BÀI KIỂM TRA!";
                 document.querySelector('.options-grid').style.display = 'none';
+                document.querySelector('.timer-container').style.display = 'none';
                 document.getElementById('btnNext').style.display = 'none';
-                document.getElementById('timerDisplay').style.display = 'none';
-                
-                await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), {
-                    status: "finished"
-                });
+                await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "finished" });
             }
         });
     </script>
