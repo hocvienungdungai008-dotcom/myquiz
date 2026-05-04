@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tham gia Quiz</title>
+    <style>
+        /* CSS cơ bản: Sẽ thêm các khối màu A, B, C, D sau */
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div id="login-screen">
+        <h2>Nhập tên để vào lớp</h2>
+        <input type="text" id="playerName" placeholder="Họ và Tên">
+        <button id="btnJoin">VÀO LỚP</button>
+    </div>
+
+    <div id="waiting-screen" style="display: none;">
+        <h3>Đang chờ giảng viên bắt đầu...</h3>
+    </div>
+
+    <!-- Script kết nối Firebase (Dùng type="module") -->
+    <script type="module">
+        // Import các hàm cần thiết từ thư viện Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot } 
+        from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Cấu hình Firebase của dự án myquiz-e696f
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0",
+            authDomain: "myquiz-e696f.firebaseapp.com",
+            projectId: "myquiz-e696f",
+            storageBucket: "myquiz-e696f.firebasestorage.app",
+            messagingSenderId: "609107578436",
+            appId: "1:609107578436:web:0a042fb99e00c2212f3611",
+            measurementId: "G-75BKW41Y6B"
+        };
+
+        // Khởi tạo Firebase và Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Nơi viết Logic xử lý cho học viên
+        const btnJoin = document.getElementById('btnJoin');
+        btnJoin.addEventListener('click', async () => {
+            const name = document.getElementById('playerName').value;
+            if(!name) return alert("Vui lòng nhập tên!");
+
+            // 1. Lưu tên vào Collection 'Players'
+            try {
+                const docRef = await addDoc(collection(db, "Players"), {
+                    name: name,
+                    score: 0,
+                    last_answer: "",
+                    answer_time: 0
+                });
+                
+                // Lưu ID người chơi vào trình duyệt để dùng cho các câu sau
+                localStorage.setItem("playerId", docRef.id);
+                
+                // Chuyển giao diện
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('waiting-screen').style.display = 'block';
+
+                // 2. Bắt đầu lắng nghe trạng thái phòng từ Giảng viên
+                listenToGameStatus();
+            } catch (e) {
+                console.error("Lỗi khi vào lớp: ", e);
+            }
+        });
+
+        function listenToGameStatus() {
+            // Lắng nghe document "Room_01" trong collection "GameSession"
+            const unsub = onSnapshot(doc(db, "GameSession", "Room_01"), (doc) => {
+                const gameData = doc.data();
+                console.log("Trạng thái lớp học hiện tại: ", gameData.status);
+                // Viết code đổi giao diện (Hiện 4 ô màu) dựa trên status tại đây
+            });
+        }
+    </script>
+</body>
+</html>
