@@ -3,23 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSE QUIZ - Bảng Điều Khiển Giảng Viên</title>
+    <title>VIHOOT - Bảng Điều Khiển Giảng Viên</title>
+    <!-- THƯ VIỆN BÊN THỨ 3 -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
+        /* ========================================== */
+        /* CSS RESET & CẤU TRÚC CƠ BẢN */
+        /* ========================================== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f9; color: #333; overflow-x: hidden; }
 
         .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #2c3e50; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .icon-btn { background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 10px; transition: color 0.3s; }
+        .icon-btn:hover { color: #3498db; }
         
         .presentation-area { margin-top: 60px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: calc(100vh - 60px); width: 100%;}
         
-        /* LOBBY */
+        /* ========================================== */
+        /* GIAO DIỆN LOBBY (CHỜ HỌC VIÊN) */
+        /* ========================================== */
         #lobbyView { width: 100%; height: 100%; max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
         .lobby-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; width: 100%; height: 90%; }
+        
+        /* CỘT TRÁI - LOBBY */
         .lobby-left { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .join-info-container { display: flex; align-items: center; justify-content: center; gap: 40px; margin-bottom: 40px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); width: 100%; max-width: 850px;}
         #qrcode { padding: 15px; background: white; border-radius: 8px; border: 2px solid #ecf0f1;}
@@ -29,25 +38,38 @@
         .action-btn { padding: 15px 35px; font-size: 22px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 6px 10px rgba(0,0,0,0.15); transition: transform 0.1s;}
         .action-btn:active { transform: scale(0.95); }
         .btn-start { background: #2ecc71; margin-bottom: 20px; width: 100%; max-width: 450px; padding: 20px 40px;}
+        
+        /* CỘT PHẢI - LOBBY (DANH SÁCH LỚP) */
         .lobby-right { background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 20px; display: flex; flex-direction: column; max-height: calc(100vh - 120px); text-align: left; }
         .lobby-right-header { border-bottom: 2px solid #ecf0f1; padding-bottom: 15px; margin-bottom: 15px; color: #2c3e50; font-size: 18px; font-weight: bold; }
         .lobby-right-header span { color: #2ecc71; font-size: 28px; }
         .main-player-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px; }
-        .player-chip { background: #e8f4fd; color: #2980b9; padding: 12px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; border-left: 4px solid #3498db; }
+        .main-player-list::-webkit-scrollbar { width: 6px; }
+        .main-player-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
+        .main-player-list::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 4px;}
+        .player-chip { background: #e8f4fd; color: #2980b9; padding: 12px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; border-left: 4px solid #3498db; animation: slideIn 0.3s ease-out;}
+        @keyframes slideIn { 0% { transform: translateX(20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 
-        /* GIAO DIỆN CHƠI GAME & ĐÁP ÁN */
+        /* ========================================== */
+        /* GIAO DIỆN TRÌNH CHIẾU CÂU HỎI (GAME VIEW) */
+        /* ========================================== */
         #gameView { width: 100%; max-width: 1400px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
         .content-area { flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        
         .question-text-box { background: white; width: 100%; padding: 40px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; font-size: 36px; font-weight: bold; color: #2c3e50; line-height: 1.4; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
         .opt-box { display: flex; align-items: center; padding: 25px; border-radius: 8px; color: white; font-size: 28px; font-weight: bold; min-height: 120px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); transition: all 0.3s ease; position: relative; }
         .opt-a { background-color: #e21b3c; } .opt-b { background-color: #1368ce; } .opt-c { background-color: #d89e00; } .opt-d { background-color: #26890c; } 
         .opt-icon { font-size: 36px; margin-right: 20px; opacity: 0.8; }
+        
+        /* Hiệu ứng chốt đáp án */
         .opt-dimmed { opacity: 0.3; filter: grayscale(50%); }
         .opt-correct { transform: scale(1.02); box-shadow: 0 0 15px rgba(46, 204, 113, 0.8); border: 3px solid #2ecc71; }
         .check-icon { position: absolute; right: 20px; font-size: 45px; color: #2ecc71; background: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
+        /* ========================================== */
         /* BẢNG XẾP HẠNG TOP 10 */
+        /* ========================================== */
         #leaderboardView { display: none; width: 100%; max-width: 800px; margin: 0 auto; flex-direction: column; align-items: center; }
         .lb-title { font-size: 48px; color: #f39c12; margin-bottom: 30px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
         .lb-list { width: 100%; list-style: none; }
@@ -59,7 +81,9 @@
         .lb-name { flex: 1; padding-left: 20px; text-align: left; }
         .lb-score { background: rgba(0,0,0,0.1); padding: 5px 15px; border-radius: 20px; }
 
-        /* THANH ĐIỀU KHIỂN DƯỚI CÙNG */
+        /* ========================================== */
+        /* THANH ĐIỀU KHIỂN DƯỚI CÙNG MÀN HÌNH */
+        /* ========================================== */
         .bottom-control-bar { background: white; width: 100%; padding: 15px 30px; border-radius: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
         .timer-badge { background: #9b59b6; color: white; padding: 10px 30px; border-radius: 30px; font-size: 32px; font-weight: bold; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3); min-width: 160px; justify-content: center; }
         .timer-badge i { font-size: 28px; }
@@ -68,7 +92,9 @@
         .btn-leaderboard { background: #8e44ad; }
         .btn-next { background: #3498db; }
 
+        /* ========================================== */
         /* SIDEBAR MENU VÀ NÚT XÓA BỘ ĐỀ */
+        /* ========================================== */
         .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.2); z-index: 1001; transition: left 0.3s ease; padding: 20px; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
@@ -97,16 +123,17 @@
 <body>
     <div class="top-bar">
         <button class="icon-btn" id="btnToggleMenu" title="Menu Cài đặt"><i class="fas fa-bars"></i></button>
-        <div style="font-weight: bold; font-size: 20px;">HSE QUIZ - BẢNG ĐIỀU KHIỂN</div>
+        <div style="font-weight: bold; font-size: 20px;">VIHOOT - BẢNG ĐIỀU KHIỂN</div>
         <button class="icon-btn" id="btnFullscreen" title="Toàn màn hình"><i class="fas fa-expand"></i></button>
     </div>
 
     <div class="presentation-area">
+        <!-- 1. THÔNG BÁO LÚC MỚI VÀO -->
         <div id="welcomeMessage" style="font-size: 24px; color: #7f8c8d; height: 100%; display: flex; align-items: center;">
             <p><i class="fas fa-arrow-left"></i> Vui lòng mở Menu góc trái để Chọn bộ câu hỏi và Mở phòng.</p>
         </div>
 
-        <!-- LOBBY CHỜ -->
+        <!-- 2. LOBBY CHỜ HỌC VIÊN VÀO LỚP -->
         <div id="lobbyView" style="display: none;">
             <div class="lobby-layout">
                 <div class="lobby-left">
@@ -118,7 +145,7 @@
                         <div class="pin-section">
                             <div class="instruction-text">Yêu cầu học viên nhập mã:</div>
                             <div class="room-pin-display" id="displayPin">----</div>
-                            <p style="font-size: 20px; color: #555;">Hoặc truy cập link:<br><b style="color: #2980b9;">hocvienungdungai008-dotcom.github.io/myquiz/</b></p>
+                            <p style="font-size: 20px; color: #555;">Hoặc truy cập link:<br><b style="color: #2980b9;">vihoot.thegioiqr.com</b></p>
                         </div>
                     </div>
                     <button class="action-btn btn-start" id="btnStartGame">BẮT ĐẦU TRẮC NGHIỆM</button>
@@ -130,10 +157,11 @@
             </div>
         </div>
         
-        <!-- KHUNG CHỨA CÂU HỎI VÀ BẢNG ĐIỀU KHIỂN -->
+        <!-- 3. KHU VỰC TRÌNH CHIẾU GAME VÀ THANH ĐIỀU KHIỂN -->
         <div id="gameView" style="display: none;">
             
             <div class="content-area">
+                <!-- KHỐI HIỂN THỊ CÂU HỎI -->
                 <div id="questionContainer" style="width: 100%;">
                     <div class="question-text-box" id="qText">Đang tải câu hỏi...</div>
                     <div class="options-grid">
@@ -144,18 +172,18 @@
                     </div>
                 </div>
 
+                <!-- KHỐI HIỂN THỊ BẢNG XẾP HẠNG -->
                 <div id="leaderboardView">
                     <h2 class="lb-title"><i class="fas fa-medal"></i> TOP 10 HỌC VIÊN XUẤT SẮC</h2>
                     <ul class="lb-list" id="topPlayersList"></ul>
                 </div>
             </div>
 
-            <!-- THANH ĐIỀU KHIỂN DƯỚI CÙNG -->
+            <!-- THANH ĐIỀU KHIỂN DƯỚI ĐÁY -->
             <div class="bottom-control-bar">
                 <div class="timer-badge" id="timerDisplayWrapper">
                     <i class="fas fa-stopwatch"></i> <span id="timerDisplay">60</span>s
                 </div>
-                
                 <div class="control-actions">
                     <button class="action-btn btn-skip" id="btnSkipTimer"><i class="fas fa-hand-paper"></i> CHỐT ĐÁP ÁN SỚM</button>
                     <button class="action-btn btn-leaderboard" id="btnShowLeaderboard" style="display: none;">XEM BẢNG XẾP HẠNG <i class="fas fa-trophy"></i></button>
@@ -165,7 +193,7 @@
         </div>
     </div>
 
-    <!-- MENU ẨN -->
+    <!-- 4. SIDEBAR MENU BÊN TRÁI -->
     <div class="overlay" id="overlay"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h2>Cài đặt & Quản lý</h2><button class="close-btn" id="btnCloseMenu"><i class="fas fa-times"></i></button></div>
@@ -193,16 +221,19 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        // Import thêm hàm deleteDoc
+        // Import đầy đủ các hàm của Firestore
         import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, query, where, getDocs, addDoc, getDoc, deleteDoc } 
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // Cấu hình kết nối Firebase
         const firebaseConfig = { apiKey: "AIzaSyD_2Boo72rw456rwrzyAEawp2CQAdz6h-0", authDomain: "myquiz-e696f.firebaseapp.com", projectId: "myquiz-e696f", storageBucket: "myquiz-e696f.firebasestorage.app", messagingSenderId: "609107578436", appId: "1:609107578436:web:0a042fb99e00c2212f3611" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
+        // Các biến quản lý State (Trạng thái game)
         let currentRoomPin = ""; let playerUnsubscribe = null; 
         let activeQuestionList = []; let currentQuestionIndex = 0; let countdownTimer; let timeLeft = 0;
 
+        // Script điều khiển Sidebar Menu và Fullscreen
         const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('overlay');
         document.getElementById('btnToggleMenu').addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('active'); });
         const closeMenu = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
@@ -212,7 +243,9 @@
             if (!document.fullscreenElement) { if (elem.requestFullscreen) elem.requestFullscreen(); else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); }
         });
 
-        // TẢI THƯ VIỆN & IMPORT
+        // ==========================================
+        // TẢI THƯ VIỆN BỘ ĐỀ (CÓ NÚT XÓA)
+        // ==========================================
         async function loadLibrary() {
             const querySnapshot = await getDocs(collection(db, "QuestionSets"));
             const libUI = document.getElementById("librarySets"); libUI.innerHTML = "";
@@ -234,23 +267,23 @@
                 const actionsDiv = document.createElement("div");
                 actionsDiv.className = "lib-item-actions";
 
+                // Nút Mở phòng
                 const btnOpen = document.createElement("button"); 
                 btnOpen.className = "btn-open-room"; 
                 btnOpen.innerText = "Mở";
                 btnOpen.title = "Mở phòng học";
                 btnOpen.addEventListener('click', () => initRoom(docSnap.id, data.name)); 
 
-                // Thêm nút Xóa
+                // Nút Xóa
                 const btnDelete = document.createElement("button");
                 btnDelete.className = "btn-delete-room";
                 btnDelete.innerHTML = '<i class="fas fa-trash"></i>';
                 btnDelete.title = "Xóa bộ đề";
                 btnDelete.addEventListener('click', async () => {
-                    // Cảnh báo xác nhận trước khi xóa
                     if(confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn bộ đề "${data.name}" không?`)) {
                         try {
                             await deleteDoc(doc(db, "QuestionSets", docSnap.id));
-                            loadLibrary(); // Tải lại danh sách
+                            loadLibrary(); 
                         } catch (e) {
                             console.error("Lỗi khi xóa:", e);
                             alert("Có lỗi xảy ra khi xóa bộ đề.");
@@ -268,6 +301,9 @@
         } 
         loadLibrary();
 
+        // ==========================================
+        // IMPORT EXCEL THÊM VÀO THƯ VIỆN
+        // ==========================================
         document.getElementById('btnImport').addEventListener('click', () => {
             const setNameInput = document.getElementById('newSetName').value.trim(); const fileInput = document.getElementById('fileUpload');
             if (!setNameInput || !fileInput.files[0]) return alert("Vui lòng nhập tên và chọn file!");
@@ -280,13 +316,15 @@
                 await addDoc(collection(db, "QuestionSets"), { name: setNameInput, created_at: Date.now(), questions: questionsArray });
                 document.getElementById('importStatus').style.color = "green"; document.getElementById('importStatus').innerText = `Thành công!`;
                 
-                // Xóa form
                 document.getElementById('newSetName').value = "";
                 document.getElementById('fileUpload').value = "";
                 loadLibrary();
             }; reader.readAsArrayBuffer(fileInput.files[0]);
         });
 
+        // ==========================================
+        // KHỞI TẠO PHÒNG VÀ HIỂN THỊ MÃ QR TÊN MIỀN MỚI
+        // ==========================================
         async function initRoom(setId, setName) {
             currentRoomPin = Math.floor(1000 + Math.random() * 9000).toString();
             const setSnap = await getDoc(doc(db, "QuestionSets", setId)); if(setSnap.exists()) activeQuestionList = setSnap.data().questions;
@@ -298,7 +336,11 @@
             document.getElementById('displayPin').innerText = currentRoomPin; 
             document.getElementById('currentSetNameDisplay').innerText = setName; 
             
-            new QRCode(document.getElementById("qrcode"), { text: `https://hocvienungdungai008-dotcom.github.io/myquiz/?pin=${currentRoomPin}`, width: 220, height: 220, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+            // Generate QR Code trỏ về vihoot.thegioiqr.com
+            new QRCode(document.getElementById("qrcode"), { 
+                text: `https://vihoot.thegioiqr.com/?pin=${currentRoomPin}`, 
+                width: 220, height: 220, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H 
+            });
             closeMenu(); listenToPlayers(currentRoomPin);
         }
 
@@ -315,7 +357,9 @@
             });
         }
 
-        // ĐIỀU KHIỂN GAME TÍCH HỢP CONTROL BAR
+        // ==========================================
+        // ĐIỀU KHIỂN GAME (TÍCH HỢP THANH CONTROL BAR DƯỚI CÙNG)
+        // ==========================================
         function renderQuestion(index) {
             const q = activeQuestionList[index];
             
@@ -328,6 +372,7 @@
             document.getElementById('txtA').innerText = q.options[0]; document.getElementById('txtB').innerText = q.options[1]; document.getElementById('txtC').innerText = q.options[2]; document.getElementById('txtD').innerText = q.options[3];
             document.getElementById('boxA').style.display = q.options[0] ? 'flex' : 'none'; document.getElementById('boxB').style.display = q.options[1] ? 'flex' : 'none'; document.getElementById('boxC').style.display = q.options[2] ? 'flex' : 'none'; document.getElementById('boxD').style.display = q.options[3] ? 'flex' : 'none';
 
+            // Quản lý hiển thị nút trên thanh điều khiển
             document.getElementById('timerDisplayWrapper').style.visibility = 'visible';
             document.getElementById('btnSkipTimer').style.display = 'block';
             document.getElementById('btnShowLeaderboard').style.display = 'none';
@@ -366,8 +411,10 @@
             document.getElementById('btnShowLeaderboard').style.display = 'block';
         };
 
+        // Nút Chốt đáp án sớm
         document.getElementById('btnSkipTimer').addEventListener('click', revealAnswerLogic);
 
+        // Nút Xem bảng xếp hạng
         document.getElementById('btnShowLeaderboard').addEventListener('click', async () => {
             await updateDoc(doc(db, "GameSession", "Room_" + currentRoomPin), { status: "leaderboard" });
             
@@ -407,6 +454,7 @@
             }
         });
 
+        // Nút Câu tiếp theo / Kết thúc
         document.getElementById('btnNextQuestion').addEventListener('click', async () => {
             currentQuestionIndex++;
             if (currentQuestionIndex < activeQuestionList.length) {
